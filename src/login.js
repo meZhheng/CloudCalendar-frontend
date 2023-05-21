@@ -9,30 +9,27 @@ function Login() {
     e.preventDefault();
 
     const data = {
-      'username': username,
-      'password': password
+      username: username,
+      password: password
     };
+    console.log(data)
 
     try {
       // 发送登录请求到后端
-      const response = await fetch('https://localhost:8000/login.php', {
+      const response = await fetch('http://localhost:8000/login.php', {
         method: 'POST',
         headers: {
+          'Cookie': document.cookie,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
       });
 
-      // 处理后端的响应
       const responseData = await response.json();
-      console.log(responseData)
 
-      // 根据后端的响应进行逻辑处理，例如显示错误消息或进行页面跳转等
       if (responseData.success) {
-        // 登录成功，进行页面跳转或其他逻辑
         console.log('登录成功');
       } else {
-        // 登录失败，显示错误消息或其他处理
         console.log('登录失败:', responseData.message);
       }
     } catch (error) {
