@@ -1,34 +1,40 @@
-import React, {useState} from "react";
-import './login.css';
+import React, {useContext, useState} from "react";
+import {Outlet, useNavigate} from "react-router-dom";
+import {AppContext} from "./AppContext";
 
 function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  const { isValid } = useContext(AppContext);
+  const navigate = useNavigate()
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const data = {
+    if (!isValid) {
+      navigate('/captcha');
+      return;
+    }
+
+    const user = {
       username: username,
       password: password
     };
-    console.log(data)
 
     try {
       // 发送登录请求到后端
       const response = await fetch('/login.php', {
         method: 'POST',
         headers: {
-          'Cookie': document.cookie,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(user)
       });
 
       const responseData = await response.json();
 
       if (responseData.success) {
-        console.log('登录成功');
+        navigate('/calendarApp')
+        console.log(responseData.message);
       } else {
         console.log('登录失败:', responseData.message);
       }
@@ -36,7 +42,6 @@ function Login() {
       console.error('登录请求出错:', error);
     }
   };
-
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -104,9 +109,11 @@ function Login() {
           </a>
         </p>
       </div>
+      <div id="detail">
+        <Outlet />
+      </div>
     </div>
   )
-
 }
 
 export default Login;
