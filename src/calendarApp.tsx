@@ -1,10 +1,10 @@
 import React from 'react'
-import { formatDate } from '@fullcalendar/core'
+import {formatDate} from '@fullcalendar/core'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
-import { INITIAL_EVENTS, createEventId } from './calendarEvent'
+import {INITIAL_EVENTS, createEventId} from './calendarEvent'
 import './calendarApp.css'
 
 export default class CalendarApp extends React.Component {
@@ -16,9 +16,9 @@ export default class CalendarApp extends React.Component {
 
   render() {
     return (
-      <div className='demo-app'>
+      <div className='calendar-app'>
         {this.renderSidebar()}
-        <div className='demo-app-main'>
+        <div className='calendar-app-main'>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
             headerToolbar={{
@@ -50,8 +50,8 @@ export default class CalendarApp extends React.Component {
 
   renderSidebar() {
     return (
-      <div className='demo-app-sidebar'>
-        <div className='demo-app-sidebar-section'>
+      <div className='calendar-app-sidebar'>
+        <div className='calendar-app-sidebar-section'>
           <h2>Instructions</h2>
           <ul>
             <li>Select dates and you will be prompted to create a new event</li>
@@ -59,7 +59,7 @@ export default class CalendarApp extends React.Component {
             <li>Click an event to delete it</li>
           </ul>
         </div>
-        <div className='demo-app-sidebar-section'>
+        <div className='calendar-app-sidebar-section'>
           <label>
             <input
               type='checkbox'
@@ -69,7 +69,7 @@ export default class CalendarApp extends React.Component {
             toggle weekends
           </label>
         </div>
-        <div className='demo-app-sidebar-section'>
+        <div className='calendar-app-sidebar-section'>
           <h2>All Events ({this.state.currentEvents.length})</h2>
           <ul>
             {this.state.currentEvents.map(renderSidebarEvent)}
@@ -85,7 +85,7 @@ export default class CalendarApp extends React.Component {
     })
   }
 
-  handleDateSelect = (selectInfo) => {
+  handleDateSelect = (selectInfo: any) => {
     let title = prompt('Please enter a new title for your event')
     let calendarApi = selectInfo.view.calendar
 
@@ -102,13 +102,13 @@ export default class CalendarApp extends React.Component {
     }
   }
 
-  handleEventClick = (clickInfo) => {
+  handleEventClick = (clickInfo: any) => {
     if (window.confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
       clickInfo.event.remove()
     }
   }
 
-  handleEvents = (events) => {
+  handleEvents = (events: any) => {
     this.setState({
       currentEvents: events
     })
@@ -116,7 +116,7 @@ export default class CalendarApp extends React.Component {
 
 }
 
-function renderEventContent(eventInfo) {
+function renderEventContent(eventInfo: any) {
   return (
     <>
       <b>{eventInfo.timeText}</b>
@@ -125,7 +125,7 @@ function renderEventContent(eventInfo) {
   )
 }
 
-function renderSidebarEvent(event) {
+function renderSidebarEvent(event: any) {
   return (
     <li key={event.id}>
       <b>{formatDate(event.start, {year: 'numeric', month: 'short', day: 'numeric'})}</b>

@@ -1,14 +1,12 @@
-import React, {Fragment, useContext, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import {AppContext} from "./AppContext";
 import {useNavigate} from "react-router-dom";
 
 export default function Captcha() {
   const [open, setOpen] = useState(true)
   const [captcha, setCaptcha] = useState('');
   const [captchaImage, setCaptchaImage] = useState('');
-  const {setValid} = useContext(AppContext)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -23,10 +21,11 @@ export default function Captcha() {
         console.error('Error fetching captcha:', error);
       });
   }, []);
+  // @ts-ignore
   const handleSubmit = e => {
     e.preventDefault();
 
-    fetch('./captcha.php', {
+    fetch('/captcha.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,7 +36,6 @@ export default function Captcha() {
       .then(data => {
         console.log(data.message)
         if (data.valid) {
-          setValid(true);
           alert('验证码正确！');
           navigate('/')
         } else {
