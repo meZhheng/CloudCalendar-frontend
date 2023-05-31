@@ -4,11 +4,11 @@ import {useNavigate} from "react-router-dom";
 import {useGetCaptchaQuery, useLoginMutation} from "../store/loginApi";
 import {setLogin, setUserInfo} from "../store/reducer/publicSlice";
 import {useDispatch} from "react-redux";
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('test')
   const [password, setPassword] = useState('test')
+  const [confirmPassword, setConfirmPassword] = useState('test')
   const [captcha, setCaptcha] = useState('')
-  const [remember, setRemember] = useState(true)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -37,7 +37,6 @@ const LoginPage: React.FC = () => {
       username: username,
       password: password,
       captcha: captcha,
-      remember: remember
     }
     try {
       const res: any = await fetchLogin(formData).unwrap();
@@ -58,6 +57,10 @@ const LoginPage: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
+    if (password !== confirmPassword) {
+      message.error("两次输入的密码不一致");
+      return;
+    }
   };
 
   const onRefreshCatch = () => {
@@ -67,12 +70,8 @@ const LoginPage: React.FC = () => {
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img className="mx-auto h-20 w-auto"
-             src="/image/calendar.png?bg-cover color=indigo&shade=600"
-             alt="CloudCalender"
-        />
         <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Sign in to your account
+          Register Your Account
         </h2>
       </div>
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -112,6 +111,24 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
           <div>
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                Confirm Your Password
+              </label>
+            </div>
+            <div className="mt-2">
+              <input
+                type={"password"}
+                id={"Rpassword"}
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                autoComplete={"off"}
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2 font-mono"
+              />
+            </div>
+          </div>
+          <div>
             <input
               type={"text" }
               maxLength={4}
@@ -129,18 +146,10 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <a href="/register">
-              注册账号
+            
+            <a href="/login">
+              已经有账户
             </a>
-            <label>
-              Remember me:
-              <input
-                type="checkbox"
-                name="remember"
-                checked={remember}
-                onChange={e => setRemember(e.target.checked)}
-              />
-            </label>
           </div>
           <div>
             <button type="submit"
@@ -157,4 +166,4 @@ const LoginPage: React.FC = () => {
   ;
 };
 
-export default LoginPage;
+export default RegisterPage;
