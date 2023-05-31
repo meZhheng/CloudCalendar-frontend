@@ -37,11 +37,6 @@ export default class CalendarApp extends React.Component {
             eventContent={renderEventContent} // custom render function
             eventClick={this.handleEventClick}
             eventsSet={this.handleEvents} // called after events are initialized/added/changed/removed
-            /* you can update a remote database when these fire:
-            eventAdd={function(){}}
-            eventChange={function(){}}
-            eventRemove={function(){}}
-            */
           />
         </div>
       </div>
@@ -74,6 +69,10 @@ export default class CalendarApp extends React.Component {
           <ul>
             {this.state.currentEvents.map(renderSidebarEvent)}
           </ul>
+        </div>
+        <div className='calendar-app-sidebar-section'>
+          <h2>Additional Section</h2>
+          <p>This is an additional section in the sidebar.</p>
         </div>
       </div>
     )

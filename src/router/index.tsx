@@ -1,6 +1,6 @@
 import React from "react";
 import LoginPage from "../login";
-import Layout from "../components/Layout";
+import LayoutPage from "../components/Layout";
 import NotFound from "../components/404";
 import Captcha from "../captcha";
 import CalendarApp from "../calendarApp";
@@ -15,7 +15,7 @@ export const routers = [
   { path: "/login", element: <LoginPage />, auth: false },
   {
     path: "/",
-    element: <Layout />,
+    element: <LayoutPage />,
     auth: true,
     children:[
       { path: "/calendarApp", element: <CalendarApp />, auth:true},
