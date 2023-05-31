@@ -13,4 +13,5 @@ const LayoutPage = () => {
     </Layout>
   );
 };
+// 可以加一些主页面的header和footer在期间
 export default LayoutPage;
