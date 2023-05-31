@@ -13,7 +13,6 @@ const AuthRoute = ({ children, auth }: any) => {
   const isExist = matches?.some((item) => item.pathname === location.pathname);
 
   useEffect(() => {
-    console.log(token, loginState, isExist, auth);
     if (token === "" && auth) {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       message.error("token 过期，请重新登录!").then(() => {});

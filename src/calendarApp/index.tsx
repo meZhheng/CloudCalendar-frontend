@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import {INITIAL_EVENTS, createEventId} from './calendarEvent'
 import './calendarApp.css'
+import UserBar from "../user/userBar";
 
 export default class CalendarApp extends React.Component {
 
@@ -74,6 +75,7 @@ export default class CalendarApp extends React.Component {
           <h2>Additional Section</h2>
           <p>This is an additional section in the sidebar.</p>
         </div>
+        {UserBar}
       </div>
     )
   }
@@ -112,9 +114,7 @@ export default class CalendarApp extends React.Component {
       currentEvents: events
     })
   }
-
 }
-
 function renderEventContent(eventInfo: any) {
   return (
     <>

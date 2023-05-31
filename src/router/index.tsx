@@ -2,7 +2,6 @@ import React from "react";
 import LoginPage from "../login";
 import LayoutPage from "../components/Layout";
 import NotFound from "../components/404";
-import Captcha from "../captcha";
 import CalendarApp from "../calendarApp";
 export interface RouteConfig {
   path: string;
@@ -16,10 +15,9 @@ export const routers = [
   {
     path: "/",
     element: <LayoutPage />,
-    auth: true,
+    auth: false,
     children:[
-      { path: "/calendarApp", element: <CalendarApp />, auth:true},
-      { path: "captcha", element:　<Captcha />, auth:true},
+      { path: "calendarApp", element: <CalendarApp />, auth: false},
       { path: "*", element: <NotFound />, auth: true },
     ]
   },
