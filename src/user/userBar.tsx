@@ -3,19 +3,24 @@ const UserBar = () => {
   return (
     <div className="flex mt-auto">
       <div className="flex m-3 ml-7 mr-7 w-full items-center rounded-full">
-        <div className="bg-white">
+        <div>
           <img className="inline-block h-10 w-10 rounded-full ring-2 ring-white"
                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                alt=""
           />
         </div>
-        <div className="flex flex-1 items-stretch flex-shrink-1 outline-none max-w-full box-border relative">
-          <div className={"flex flex-shrink-1 flex-col flex-grow outline-none max-w-full ml-3 mr-3"}>
-            <p>test</p>
-            <p>@test</p>
+        <div className="flex flex-col items-stretch flex-shrink-1 outline-none max-w-full box-border relative">
+          <div className="flex flex-shrink-1 flex-col flex-grow outline-none max-w-full ml-3 mr-3">
+            <div className="flex flex-col items-stretch flex-shrink-1 outline-none max-w-full box-border relative">
+              <span>test</span>
+            </div>
+            <div className="flex flex-row items-center flex-shrink-1 box-border relative"></div>
+            <div>
+              <span>@test</span>
+            </div>
           </div>
         </div>
-        <div className="flex flex-1 items-end flex-grow border-0 box-border relative">
+        <div className="flex items-end flex-grow border-0 box-border relative">
           <svg viewBox="0 0 24 24" aria-hidden="true"
                className="text-red-500 h-5">
             <g>
