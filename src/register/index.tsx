@@ -1,16 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {message} from "antd";
 import {useNavigate} from "react-router-dom";
-import {useGetCaptchaQuery, useLoginMutation} from "../store/loginApi";
-import {setLogin, setUserInfo} from "../store/reducer/publicSlice";
-import {useDispatch} from "react-redux";
+import {useGetCaptchaQuery, useRegisterMutation} from "../store/loginApi";
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('test')
   const [password, setPassword] = useState('test')
   const [confirmPassword, setConfirmPassword] = useState('test')
   const [captcha, setCaptcha] = useState('')
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const {
     // 数据
@@ -22,7 +19,7 @@ const RegisterPage: React.FC = () => {
   } = useGetCaptchaQuery(null, {});
 
   // const [fetchLogin, {isLoading}] = useLoginMutation();
-  const [fetchLogin] = useLoginMutation();
+  const [fetchRegister] = useRegisterMutation();
 
   useEffect(() => {
     if (isError) {
@@ -33,22 +30,27 @@ const RegisterPage: React.FC = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      message.error("两次输入的密码不一致");
+      return;
+    }
     const formData = {
       username: username,
       password: password,
       captcha: captcha,
     }
     try {
-      const res: any = await fetchLogin(formData).unwrap();
+      const res: any = await fetchRegister(formData).unwrap();
       if (res?.code === 200) {
         message.success(res?.message);
-        const token = res?.token;
-        localStorage.setItem("userToken", token);
-        dispatch(setLogin("login"));
-        dispatch(setUserInfo(res?.user));
-        navigate("/calendarApp");
-      } else {
+        navigate("/login");
+      }
+       else {
         message.error(res?.message);
+        setUsername("");
+        setPassword("");
+        setCaptcha("");
+        setConfirmPassword("");
         // 重新刷新验证码
         setTimeout(() => {
           refetchCaptcha();
@@ -57,10 +59,7 @@ const RegisterPage: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-    if (password !== confirmPassword) {
-      message.error("两次输入的密码不一致");
-      return;
-    }
+
   };
 
   const onRefreshCatch = () => {

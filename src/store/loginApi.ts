@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { GET_CAPTCHA, LOGIN } from "../api/api";
+import { GET_CAPTCHA, LOGIN, REGISTER } from "../api/api";
 import { baseUrl, InterceptorsResponse } from "../api/baseQuery";
 
 const loginApi = createApi({
@@ -22,6 +22,18 @@ const loginApi = createApi({
           };
         },
       }),
+      register: build.mutation({
+        query(args) {
+          return {
+            url: REGISTER,
+            method: 'POST',
+            body: args,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          };
+        },
+      }),
       getCaptcha: build.query({
         query() {
           return GET_CAPTCHA;
@@ -35,6 +47,6 @@ const loginApi = createApi({
     };
   },
 });
-export const { useLoginMutation, useGetCaptchaQuery } = loginApi;
+export const { useLoginMutation, useRegisterMutation, useGetCaptchaQuery } = loginApi;
 
 export default loginApi;
