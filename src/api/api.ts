@@ -2,9 +2,7 @@
 export const GET_CAPTCHA = '/captcha.php';
 export const LOGIN = '/login.php';
 export const REGISTER = '/register.php';
-// export const GET_CAPTCHA = 'http://localhost:8000/captcha.php';
-// export const LOGIN = 'http://localhost:8000/login.php';
-// export const REGISTER = 'http://localhost:8000/register.php';
+export const LOGOUT = '/logout.php';
 export const IMGS = '/imgs';
 export const CATEGORY = '/category';
 

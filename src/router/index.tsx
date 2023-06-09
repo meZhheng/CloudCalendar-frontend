@@ -5,6 +5,7 @@ import NotFound from "../components/404";
 import CalendarApp from "../calendarApp";
 import RegisterPage from "../register";
 import UserProfile from "../user/profile";
+import LogoutPage from "../login/logout";
 
 export interface RouteConfig {
   path: string;
@@ -15,6 +16,7 @@ export interface RouteConfig {
 }
 export const routers = [
   { path: "/login", element: <LoginPage />, auth: false },
+  { path: "/logout", element: <LogoutPage />, auth: true},
   { path: "/register", element: <RegisterPage />, auth: false},
   {
     path: "/",
