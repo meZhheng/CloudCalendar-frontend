@@ -25,7 +25,7 @@ export const routers = [
     auth: false,
     children:[
       { path: "calendarApp", element: <CalendarApp />, auth: true },
-      { path: "profile", element: <UserProfile />, auth: false },
+      { path: "userProfile", element: <Profile />, auth: false },
       { path: "*", element: <NotFound />, auth: false },
     ]
   },
