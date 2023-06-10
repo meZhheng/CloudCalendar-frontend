@@ -6,6 +6,7 @@ import CalendarApp from "../calendarApp";
 import RegisterPage from "../register";
 import UserProfile from "../user/profile";
 import LogoutPage from "../login/logout";
+import Profile from "../user/userProfile";
 
 export interface RouteConfig {
   path: string;
@@ -16,16 +17,16 @@ export interface RouteConfig {
 }
 export const routers = [
   { path: "/login", element: <LoginPage />, auth: false },
-  { path: "/logout", element: <LogoutPage />, auth: true},
-  { path: "/register", element: <RegisterPage />, auth: false},
+  { path: "/logout", element: <LogoutPage />, auth: true },
+  { path: "/register", element: <RegisterPage />, auth: false },
   {
     path: "/",
     element: <LayoutPage />,
     auth: false,
     children:[
-      { path: "calendarApp", element: <CalendarApp />, auth: false},
-      { path: "profile", element: <UserProfile />, auth: false},
-      { path: "*", element: <NotFound />, auth: true },
+      { path: "calendarApp", element: <CalendarApp />, auth: true },
+      { path: "userProfile", element: <Profile />, auth: false },
+      { path: "*", element: <NotFound />, auth: false },
     ]
   },
 ];

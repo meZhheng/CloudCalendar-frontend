@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {message} from "antd";
 import {useNavigate} from "react-router-dom";
 import {useGetCaptchaQuery, useRegisterMutation} from "../store/loginApi";
+import {setLogin, setUserInfo} from "../store/reducer/publicSlice";
+import {useDispatch} from "react-redux";
 const RegisterPage: React.FC = () => {
   const [username, setUsername] = useState('test')
   const [password, setPassword] = useState('test')
@@ -20,6 +22,7 @@ const RegisterPage: React.FC = () => {
 
   // const [fetchLogin, {isLoading}] = useLoginMutation();
   const [fetchRegister] = useRegisterMutation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (isError) {
@@ -43,7 +46,11 @@ const RegisterPage: React.FC = () => {
       const res: any = await fetchRegister(formData).unwrap();
       if (res?.code === 200) {
         message.success(res?.message);
-        navigate("/login");
+        const token = res?.token;
+        localStorage.setItem("userToken", token);
+        dispatch(setLogin("login"));
+        dispatch(setUserInfo(res?.user));
+        navigate("/profile");
       }
        else {
         message.error(res?.message);
