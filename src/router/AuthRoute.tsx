@@ -12,19 +12,19 @@ const AuthRoute = ({ children, auth }: any) => {
   const isExist = matches?.some((item) => item.pathname === location.pathname);
 
   useEffect(() => {
-    if(auth) {
-      if (token === "") {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (auth) {
+      if (token === "" || loginState === "logout") {
         message.error("token 过期，请重新登录!").then(() => {});
         navigate("/login");
-      }
-      if (token && isExist && loginState === "login") {
+      } else if (isExist) {
         if (location.pathname === "/" || location.pathname === "/login") {
           navigate("/calendarApp");
         } else {
           navigate(location.pathname);
         }
       }
+    } else {
+      navigate(location.pathname);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, location.pathname]);
