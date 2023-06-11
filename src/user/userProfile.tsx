@@ -5,30 +5,19 @@ const UserProfile = () => {
   const [openSettings, setOpenSettings] = useState(false);
   const [InfoSettings, setInfoSettings] = useState(false);
   const [AboutSettings, setAboutSettings] = useState(false);
-  const [PhoneValue, setPhoneValue] = useState('');
+  const [PhoneValue, setPhoneValue] = useState('123123');
+  const [InputValue1,setInputValue1] = useState('');
 
   const ref = useRef(null) as React.MutableRefObject<any>;
 
-  const sendDataToPHPApp=(url: any, id: any)=>{
-    fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({uid: id,action:'getPrivacy'}),
-    })
-      .then(response => response.json())
-      .then(data => {
-        // 处理从PHP应用返回的数据
-        console.log(data);
-      })
-      .catch(error => {
-        // 处理请求错误
-        console.error('Error:', error);
-      });
-  }
   
+  const SaveClick = () => {
 
+    setPhoneValue(InputValue1);
+    setInfoSettings(false);
+    console.log(InputValue1);
+
+  };
 
   const toggleSettings = () => {
     setOpenSettings(!openSettings);
@@ -302,6 +291,8 @@ const UserProfile = () => {
                                 id="phonenumber"
                                 name="phonenumber"
                                 type="phonenumber"
+                                value={InputValue1}
+                                onChange={(event) => setInputValue1(event.target.value)}
                                 autoComplete="off"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -417,8 +408,9 @@ const UserProfile = () => {
                         Cancel
                       </button>
                       <button
-                        type="submit"
+                        type="button"
                         className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        onClick={SaveClick}
                       >
                         Save
                       </button>
@@ -450,7 +442,7 @@ const UserProfile = () => {
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Mobile:</span>
-                <span className="text-gray-700">(123) 123-1234</span>
+                {PhoneValue&&<span className="text-gray-700">{PhoneValue}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Email:</span>
