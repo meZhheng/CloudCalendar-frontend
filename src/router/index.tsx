@@ -4,9 +4,8 @@ import LayoutPage from "../components/Layout";
 import NotFound from "../components/404";
 import CalendarApp from "../calendarApp";
 import RegisterPage from "../register";
-import UserProfile from "../user/profile";
 import LogoutPage from "../login/logout";
-import Profile from "../user/userProfile";
+import UserProfile from "../user/userProfile";
 
 export interface RouteConfig {
   path: string;
@@ -25,7 +24,7 @@ export const routers = [
     auth: false,
     children:[
       { path: "calendarApp", element: <CalendarApp />, auth: true },
-      { path: "userProfile", element: <Profile />, auth: false },
+      { path: "profile", element: <UserProfile />, auth: false },
       { path: "*", element: <NotFound />, auth: false },
     ]
   },
