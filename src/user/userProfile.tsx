@@ -1,11 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 
-const Profile = () => {
+const UserProfile = () => {
   const [openSettings, setOpenSettings] = useState(false);
+  const [InfoSettings, setInfoSettings] = useState(false);
+  const [AboutSettings, setAboutSettings] = useState(false);
+  const [PhoneValue, setPhoneValue] = useState('');
+
   const ref = useRef(null) as React.MutableRefObject<any>;
+
+  const sendDataToPHPApp=(url: any, id: any)=>{
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({uid: id,action:'getPrivacy'}),
+    })
+      .then(response => response.json())
+      .then(data => {
+        // 处理从PHP应用返回的数据
+        console.log(data);
+      })
+      .catch(error => {
+        // 处理请求错误
+        console.error('Error:', error);
+      });
+  }
+  
+
 
   const toggleSettings = () => {
     setOpenSettings(!openSettings);
+  };
+
+  const toggleSettings_Info = () => {
+    setInfoSettings(!InfoSettings);
+  };
+
+  const toggleSettings_About = () => {
+    setAboutSettings(!AboutSettings);
   };
 
   useEffect(() => {
@@ -14,7 +48,7 @@ const Profile = () => {
         setOpenSettings(false);
       }
     };
-
+    
     document.addEventListener('click', handleClickOutside);
 
     return () => {
@@ -70,11 +104,11 @@ const Profile = () => {
           </div>
         </div>
         <div className="w-full h-[250px]">
-          <img src="https://vojislavd.com/ta-template-demo/assets/img/profile-background.jpg"
+          <img src="/image/background.jpg"
                className="w-full h-full rounded-tl-lg rounded-tr-lg" alt=""/>
         </div>
         <div className="flex flex-col items-center -mt-20">
-          <img src="https://vojislavd.com/ta-template-demo/assets/img/profile.jpg"
+          <img src="/image/photo.jpg"
                className="w-40 border-4 border-white rounded-full" alt=""/>
             <div className="flex items-center space-x-2 mt-2">
               <p className="text-2xl">Amanda Ross</p>
@@ -86,8 +120,8 @@ const Profile = () => {
                 </svg>
               </span>
             </div>
-            <p className="text-gray-700">Senior Software Engineer at Tailwind CSS</p>
-            <p className="text-sm text-gray-500">New York, USA</p>
+            <p className="text-gray-700">CloudCalendar Invited User</p>
+            <p className="text-sm text-gray-500">SJTU, Shanghai</p>
         </div>
         <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
           <div className="flex items-center space-x-4 mt-2">
@@ -113,6 +147,288 @@ const Profile = () => {
       </div>
       <div className="my-4 flex flex-col 2xl:flex-row space-y-4 2xl:space-y-0 2xl:space-x-4">
         <div className="w-full flex flex-col 2xl:w-1/3">
+          <div className='relative'>
+            <div className="absolute right-12 mt-4 rounded ">
+              <button onClick={toggleSettings_Info} className="border border-gray-400 p-2 rounded text-gray-300 hover:text-gray-300 bg-gray-100 bg-opacity-10 hover:bg-opacity-20 relative" title="Settings">
+              <svg className="h-4 w-4"  fill="black" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2557" width="40" height="40">
+                <path 
+                    d="M936.7 488.6l-399.9-0.6 0.5-399.8c0-13.3-10.7-24-24-24-13.2 0-24 10.7-24 24l-0.5 399.8-399.8-0.5c-13.2 0-24 10.7-24 24s10.7 24 24 24l399.8 0.5-0.5 399.9c0 13.3 10.7 24 24 24 13.2 0 24-10.7 24-24l0.5-399.9 399.9 0.5c13.2 0 24-10.7 24-24 0-13.2-10.7-23.9-24-23.9z" 
+                    p-id="2558"></path>
+              </svg>
+              </button>
+            {InfoSettings && (
+              <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                <div className="bg-white p-4 w-1/2 h-4/5 overflow-y-auto">
+                  <form>
+                    <div className="space-y-12">
+                      <div className="border-b border-gray-900/10 pb-12">
+                        <h2 className="text-base font-semibold leading-7 text-gray-900">Profile</h2>
+                        <p className="mt-1 text-sm leading-6 text-gray-600">
+                          This information will be displayed publicly so be careful what you share.
+                        </p>
+
+                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                          <div className="col-span-full">
+                            <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
+                              About
+                            </label>
+                            <div className="mt-2">
+                              <textarea
+                                id="about"
+                                name="about"
+                                rows={3}
+                                className="block w-full rounded-md border-0  px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                defaultValue={''}
+                                placeholder="Introduce Yourself"
+                              />
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
+                          </div>
+
+                          <div className="col-span-full">
+                            <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
+                              Photo
+                            </label>
+                            <div className="mt-2 flex items-center gap-x-3">
+                              <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />
+                              <button
+                                type="button"
+                                className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                              >
+                                Change
+                              </button>
+                            </div>
+                          </div>
+
+                          <div className="col-span-full">
+                            <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-gray-900">
+                              Cover photo
+                            </label>
+                            <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                              <div className="text-center">
+                                <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+                                <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                                  <label
+                                    htmlFor="file-upload"
+                                    className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                                  >
+                                    <span>Upload a file</span>
+                                    <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                                  </label>
+                                  <p className="pl-1">or drag and drop</p>
+                                </div>
+                                <p className="text-xs leading-5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-b border-gray-900/10 pb-12">
+                        <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
+                        <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
+
+                        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                          <div className="sm:col-span-3">
+                            <label htmlFor="Apartment" className="block text-sm font-medium leading-6 text-gray-900">
+                              Apartment
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                name="Apartment"
+                                id="Apartment"
+                                autoComplete="given-name"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-3">
+                            <label htmlFor="Position" className="block text-sm font-medium leading-6 text-gray-900">
+                              Position
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                name="Position"
+                                id="Position"
+                                autoComplete="family-name"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-3">
+                            <label htmlFor="location" className="block text-sm font-medium leading-6 text-gray-900">
+                              Location
+                            </label>
+                            <div className="mt-2">
+                              <select
+                                id="location"
+                                name="location"
+                                autoComplete="Location"
+                                className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
+                              >
+                                <option>Shanghai</option>
+                                <option>Beijing</option>
+                                <option>Jiangsu</option>
+                                <option>Gangdong</option>
+                              </select>
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                              Email address
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autoComplete="off"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                              Phone Number
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                id="phonenumber"
+                                name="phonenumber"
+                                type="phonenumber"
+                                autoComplete="off"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border-b border-gray-900/10 pb-12">
+                        <h2 className="text-base font-semibold leading-7 text-gray-900">Notifications</h2>
+                        <p className="mt-1 text-sm leading-6 text-gray-600">
+                          We'll always let you know about important changes, but you pick what else you want to hear about.
+                        </p>
+
+                        <div className="mt-10 space-y-10">
+                          <fieldset>
+                            <legend className="text-sm font-semibold leading-6 text-gray-900">By Email</legend>
+                            <div className="mt-6 space-y-6">
+                              <div className="relative flex gap-x-3">
+                                <div className="flex h-6 items-center">
+                                  <input
+                                    id="comments"
+                                    name="comments"
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                  />
+                                </div>
+                                <div className="text-sm leading-6">
+                                  <label htmlFor="comments" className="font-medium text-gray-900">
+                                    Comments
+                                  </label>
+                                  <p className="text-gray-500">Get notified when someones posts a comment on a posting.</p>
+                                </div>
+                              </div>
+                              <div className="relative flex gap-x-3">
+                                <div className="flex h-6 items-center">
+                                  <input
+                                    id="candidates"
+                                    name="candidates"
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                  />
+                                </div>
+                                <div className="text-sm leading-6">
+                                  <label htmlFor="candidates" className="font-medium text-gray-900">
+                                    Candidates
+                                  </label>
+                                  <p className="text-gray-500">Get notified when a candidate applies for a job.</p>
+                                </div>
+                              </div>
+                              <div className="relative flex gap-x-3">
+                                <div className="flex h-6 items-center">
+                                  <input
+                                    id="offers"
+                                    name="offers"
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                  />
+                                </div>
+                                <div className="text-sm leading-6">
+                                  <label htmlFor="offers" className="font-medium text-gray-900">
+                                    Offers
+                                  </label>
+                                  <p className="text-gray-500">Get notified when a candidate accepts or rejects an offer.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </fieldset>
+                          <fieldset>
+                            <legend className="text-sm font-semibold leading-6 text-gray-900">Push Notifications</legend>
+                            <p className="mt-1 text-sm leading-6 text-gray-600">These are delivered via SMS to your mobile phone.</p>
+                            <div className="mt-6 space-y-6">
+                              <div className="flex items-center gap-x-3">
+                                <input
+                                  id="push-everything"
+                                  name="push-notifications"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label htmlFor="push-everything" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Everything
+                                </label>
+                              </div>
+                              <div className="flex items-center gap-x-3">
+                                <input
+                                  id="push-email"
+                                  name="push-notifications"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label htmlFor="push-email" className="block text-sm font-medium leading-6 text-gray-900">
+                                  Same as email
+                                </label>
+                              </div>
+                              <div className="flex items-center gap-x-3">
+                                <input
+                                  id="push-nothing"
+                                  name="push-notifications"
+                                  type="radio"
+                                  className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                                />
+                                <label htmlFor="push-nothing" className="block text-sm font-medium leading-6 text-gray-900">
+                                  No push notifications
+                                </label>
+                              </div>
+                            </div>
+                          </fieldset>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-6 flex items-center justify-end gap-x-6">
+                      <button type="button" onClick={() => setInfoSettings(false)} className="text-sm font-semibold leading-6 text-gray-900">
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
+            </div>
+          </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
             <h4 className="text-xl text-gray-900 font-bold">Personal Info</h4>
             <ul className="mt-2 text-gray-700">
@@ -145,6 +461,14 @@ const Profile = () => {
                 <span className="text-gray-700">上海</span>
               </li>
             </ul>
+          </div>
+          <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
+            <h4 className="text-xl text-gray-900 font-bold">About</h4>
+            <p className="mt-2 text-gray-700">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt voluptates
+              obcaecati numquam error et ut fugiat asperiores. Sunt nulla ad incidunt laboriosam, laudantium est unde
+              natus cum numquam, neque facere. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, magni odio
+              magnam commodi sunt ipsum eum! Voluptas eveniet aperiam at maxime, iste id dicta autem odio laudantium
+              eligendi commodi distinctio!</p>
           </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
             <h4 className="text-xl text-gray-900 font-bold">Activity log</h4>
@@ -210,16 +534,6 @@ const Profile = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full 2xl:w-2/3">
-          <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
-            <h4 className="text-xl text-gray-900 font-bold">About</h4>
-            <p className="mt-2 text-gray-700">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt voluptates
-              obcaecati numquam error et ut fugiat asperiores. Sunt nulla ad incidunt laboriosam, laudantium est unde
-              natus cum numquam, neque facere. Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut, magni odio
-              magnam commodi sunt ipsum eum! Voluptas eveniet aperiam at maxime, iste id dicta autem odio laudantium
-              eligendi commodi distinctio!</p>
-          </div>
-        </div>
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="flex items-center justify-between">
             <h4 className="text-xl text-gray-900 font-bold">Connections (532)</h4>
@@ -248,4 +562,4 @@ const Profile = () => {
     </body>
   )
 }
-export default Profile
+export default UserProfile

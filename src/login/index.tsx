@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
             <img
               src={captchaImg?.captcha_img}
               style={{width: "200px", height: "40"}}
-              alt=""
+              alt="验证图片"
               onClick={onRefreshCatch}
             />
           </div>
