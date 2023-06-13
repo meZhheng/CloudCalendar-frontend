@@ -11,10 +11,18 @@ const UserProfile = () => {
   const [ApartmentValue, setApartmentValue] = useState('人事部');
   const [PositionValue, setPositionValue] = useState('人事部经理');
   const [AboutValue, setAboutValue] = useState('Write something about yourself');
+  const [EmailValue, setEmailSettings] = useState('example@sjtu.edu.cn');
+  const [selectedOption, setSelectedOption] = useState('上海');
+  const [username, setUsername] = useState('bloom');
+  const [nickname, setnickname] = useState('Bloom')
   const [InputValue1,setInputValue1] = useState('');
   const [InputValue2,setInputValue2] = useState('');
   const [InputValue3,setInputValue3] = useState('');
   const [InputValue4,setInputValue4] = useState('');
+  const [InputValue5,setInputValue5] = useState('');
+  const [InputValue6,setInputValue6] = useState('');
+  const [InputValue7,setInputValue7] = useState('');
+
 
   const ref = useRef(null) as React.MutableRefObject<any>;
   const ref1 = useRef(null) as React.MutableRefObject<any>;
@@ -27,7 +35,14 @@ const UserProfile = () => {
     setJoinSettings(false);
   };
 
+  const handleSelectChange = (event:any) => {
+    setSelectedOption(event.target.value);
+  };
+
   const SaveClick = () => {
+    setnickname(InputValue7);
+    setUsername(InputValue6);
+    setEmailSettings(InputValue5);
     setAboutValue(InputValue4);
     setPositionValue(InputValue3);
     setApartmentValue(InputValue2);
@@ -130,7 +145,7 @@ const UserProfile = () => {
           <img src="/image/photo.jpg"
                className="w-40 border-4 border-white rounded-full" alt=""/>
             <div className="flex items-center space-x-2 mt-2">
-              <p className="text-2xl">Amanda Ross</p>
+              {username&&<p className="text-2xl">{username}</p>}
               <span className="bg-blue-500 rounded-full p-1" title="Verified">
                 <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-100 h-2.5 w-2.5" fill="none"
                    viewBox="0 0 24 24" stroke="currentColor">
@@ -145,20 +160,19 @@ const UserProfile = () => {
         <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
           <div className="flex items-center space-x-4 mt-2">
             <button
-              className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path
-                  d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
-              </svg>
-              <span>Connect</span>
+              className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+                <svg className="h-5 w-5" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4499">
+                  <path d="M768 790.56l-128-0.032v-118.944a128.224 128.224 0 0 0-128-128.192c-70.592 0-128 57.504-128 128.192v118.88l-128-0.032V364.992l255.68-167.52L768 365.376v425.184z m-192-0.032l-128-0.032v-118.912c0-35.392 28.704-64.192 64-64.192s64 28.8 64 64.192v118.944z m304.896-427.68L800 309.856V207.168a32 32 0 1 0-64 0v60.768l-206.464-135.296A31.296 31.296 0 0 0 511.424 128a31.168 31.168 0 0 0-17.6 4.64l-351.36 230.208a32 32 0 0 0 35.072 53.536L192 406.912v393.056c0 30.08 27.2 54.592 60.576 54.592h518.848c33.408 0 60.576-24.512 60.576-54.592v-392.64l13.856 9.056a31.968 31.968 0 0 0 35.04-53.536z" fill="#231815" p-id="4500">
+                  </path>
+                </svg>
+              <span>Main Page</span>
             </button>
             <button
-              className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray-100 px-4 py-2 rounded text-sm space-x-2 transition duration-100">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd"
-                      d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                      clipRule="evenodd"></path>
-              </svg>
+              className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+                <svg className="h-5 w-5" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="6465">
+                  <path d="M240 658.08h220.784l55.744 65.04 55.744-65.04h220.768V272H240v386.08z m-48 32V240a16 16 0 0 1 16-16h617.04a16 16 0 0 1 16 16v450.08a16 16 0 0 1-16 16H594.336l-65.664 76.64a16 16 0 0 1-24.304 0l-65.664-76.64H208a16 16 0 0 1-16-16zM366.256 498.56a33.488 33.488 0 1 1 0-66.992 33.488 33.488 0 0 1 0 66.992z m150.272 0a33.488 33.488 0 1 1 0-66.992 33.488 33.488 0 0 1 0 66.992z m150.24 0a33.488 33.488 0 1 1 0-66.992 33.488 33.488 0 0 1 0 66.992z" fill="#000000" p-id="6466">
+                  </path>
+                </svg>
               <span>Message</span>
             </button>
           </div>
@@ -187,6 +201,22 @@ const UserProfile = () => {
                         </p>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                              User Name
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                id="username"
+                                name="username"
+                                type="username"
+                                value={InputValue6}
+                                onChange={(event) => setInputValue6(event.target.value)}
+                                autoComplete="off"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
                           <div className="col-span-full">
                             <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
                               About
@@ -250,6 +280,22 @@ const UserProfile = () => {
                         <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="sm:col-span-4">
+                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                              NickName
+                            </label>
+                            <div className="mt-2">
+                              <input
+                                id="nickname"
+                                name="nickname"
+                                type="nickname"
+                                value={InputValue7}
+                                onChange={(event) => setInputValue7(event.target.value)}
+                                autoComplete="off"
+                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                              />
+                            </div>
+                          </div>
                           <div className="sm:col-span-3">
                             <label htmlFor="Apartment" className="block text-sm font-medium leading-6 text-gray-900">
                               Apartment
@@ -293,12 +339,14 @@ const UserProfile = () => {
                                 id="location"
                                 name="location"
                                 autoComplete="Location"
+                                value={selectedOption} 
+                                onChange={handleSelectChange}
                                 className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                               >
-                                <option>Shanghai</option>
-                                <option>Beijing</option>
-                                <option>Jiangsu</option>
-                                <option>Gangdong</option>
+                                <option value='上海'>Shanghai</option>
+                                <option value='北京'>Beijing</option>
+                                <option value='江苏'>Jiangsu</option>
+                                <option value='广东'>Gangdong</option>
                               </select>
                             </div>
                           </div>
@@ -312,6 +360,8 @@ const UserProfile = () => {
                                 id="email"
                                 name="email"
                                 type="email"
+                                value={InputValue5}
+                                onChange={(event) => setInputValue5(event.target.value)}
                                 autoComplete="off"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -460,9 +510,9 @@ const UserProfile = () => {
           <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
             <h4 className="text-xl text-gray-900 font-bold">Personal Info</h4>
             <ul className="mt-2 text-gray-700">
-            <li className="flex border-b py-2">
-                <span className="font-bold w-24">Full name:</span>
-                <span className="text-gray-700">Amanda S. Ross</span>
+              <li className="flex border-b py-2">
+                <span className="font-bold w-24">NickName:</span>
+                {nickname&&<span className="text-gray-700">{nickname}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Apartment:</span>
@@ -482,11 +532,11 @@ const UserProfile = () => {
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Email:</span>
-                <span className="text-gray-700">amandaross@example.com</span>
+                {EmailValue&&<span className="text-gray-700">{EmailValue}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Location:</span>
-                <span className="text-gray-700">上海</span>
+                {selectedOption&&<span className="text-gray-700">{selectedOption}</span>}
               </li>
             </ul>
           </div>
