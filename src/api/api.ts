@@ -1,10 +1,12 @@
 // 获取验证码
 export const GET_CAPTCHA = '/captcha.php';
-export const LOGIN = '/login.php';
-export const REGISTER = '/register.php';
-export const LOGOUT = '/logout.php';
+export const LOGIN = '/user/login.php';
+export const REGISTER = '/user/register.php';
+export const LOGOUT = '/user/logout.php';
 export const IMGS = '/imgs';
 export const CATEGORY = '/category';
+export const CreateGroup = '/group/createGroup.php';
+export const Personalinfo = '/user/personalinfo.php';
 
 // 全部mv
 export const CAT_LIST = '/mv/all';
