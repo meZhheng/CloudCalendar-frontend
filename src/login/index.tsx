@@ -5,8 +5,8 @@ import {useGetCaptchaQuery, useLoginMutation} from "../store/loginApi";
 import {setLogin, setUserInfo} from "../store/reducer/publicSlice";
 import {useDispatch} from "react-redux";
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('test')
-  const [password, setPassword] = useState('test')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [captcha, setCaptcha] = useState('')
   const [remember, setRemember] = useState(true)
   const navigate = useNavigate();
