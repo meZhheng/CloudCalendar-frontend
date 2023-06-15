@@ -5,6 +5,8 @@ export const REGISTER = '/user/register.php';
 export const LOGOUT = '/user/logout.php';
 export const IMGS = '/imgs';
 export const CATEGORY = '/category';
+export const CreateGroup = '/group/createGroup.php';
+export const Personalinfo = '/user/personalinfo.php';
 
 // 全部mv
 export const CAT_LIST = '/mv/all';
