@@ -269,7 +269,7 @@ const UserProfile = () => {
 
                           <div className="col-span-full">
                             <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
-                              Photo
+                              Photo(Not available now)
                             </label>
                             <div className="mt-2 flex items-center gap-x-3">
                               <UserCircleIcon className="h-12 w-12 text-gray-300" aria-hidden="true" />

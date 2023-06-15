@@ -112,15 +112,22 @@ const LoginPage: React.FC = () => {
             </div>
           </div>
           <div>
-            <input
-              type={"text" }
-              maxLength={4}
-              value={captcha}
-              onChange={e => setCaptcha(e.target.value.replace(/[^a-zA-Z]/g, ''))}
-              autoComplete={"off"}
-              required
-              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2 font-mono"
-            />
+            <div className="flex items-center justify-between">
+              <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                Captcha
+              </label>
+            </div>
+            <div className="mt-2">
+              <input
+                type={"text" }
+                maxLength={4}
+                value={captcha}
+                onChange={e => setCaptcha(e.target.value.replace(/[^a-zA-Z]/g, ''))}
+                autoComplete={"off"}
+                required
+                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2 font-mono"
+              />
+            </div>
             <img
               src={captchaImg?.captcha_img}
               style={{width: "200px", height: "40"}}
@@ -129,18 +136,12 @@ const LoginPage: React.FC = () => {
             />
           </div>
           <div>
-            <a href="/register">
-              注册账号
-            </a>
-            <label>
-              Remember me:
-              <input
-                type="checkbox"
-                name="remember"
-                checked={remember}
-                onChange={e => setRemember(e.target.checked)}
-              />
-            </label>
+            <p className="mt-10 text-center text-sm text-gray-500">
+              Not a member?{' '}
+              <a href="/register" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                Register an account.
+              </a>
+            </p>
           </div>
           <div>
             <button type="submit"
