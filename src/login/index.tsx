@@ -21,7 +21,6 @@ const LoginPage: React.FC = () => {
     isError,
   } = useGetCaptchaQuery(null, {});
 
-  // const [fetchLogin, {isLoading}] = useLoginMutation();
   const [fetchLogin] = useLoginMutation();
 
   useEffect(() => {

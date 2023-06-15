@@ -5,7 +5,7 @@ import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUser
 import {message} from "antd";
 import {useSelector} from "react-redux";
 
-const UserProfile = () => {
+const UserProfile: React.FC = () => {
   const [GroupSettings, setGroupSettings] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [InfoSettings, setInfoSettings] = useState(false);
@@ -14,6 +14,15 @@ const UserProfile = () => {
 
   const username = useSelector((state: any) => state.public.userInfo);
   const token = localStorage.getItem("userToken") || "";
+
+  const {
+    // 数据
+    data,
+    // 刷新方法
+    refetch: refetchUserInfo,
+    // 判断是否出错
+    isError,
+  } = useGetUserInfoQuery(null, {});
 
   const [userInfoData, setUserInfoData] = useState({
     nickName: '',
@@ -40,29 +49,21 @@ const UserProfile = () => {
   const ref = useRef(null) as React.MutableRefObject<any>;
   const ref1 = useRef(null) as React.MutableRefObject<any>;
 
-  const {
-    // 数据
-    data: userInfo,
-    // 刷新方法
-    refetch: refetchUserInfo,
-    // 判断是否出错
-    isError,
-  } = useGetUserInfoQuery(null, {});
-
   useEffect(() => {
     if (isError) {
       message.error("后端接口连接异常！").then(() => {
       });
-    } else if (userInfo) {
-      updateFormData('nickname', userInfo?.nickName);
-      updateFormData('apartmentValue', userInfo?.apartmentValue);
-      updateFormData('positionValue', userInfo?.positionValue);
-      updateFormData('phoneValue', userInfo?.phoneValue);
-      updateFormData('emailValue', userInfo?.emailValue);
-      updateFormData('location', userInfo?.location);
-      updateFormData('about', userInfo?.about);
     }
-  }, [userInfo, isError]);
+    if (data) {
+      updateFormData('nickName', data?.userInfo?.nickname);
+      updateFormData('apartmentValue', data?.userInfo?.apartment);
+      updateFormData('positionValue', data?.userInfo?.position);
+      updateFormData('phoneValue', data?.userInfo?.mobile);
+      updateFormData('emailValue', data?.userInfo?.email);
+      updateFormData('location', data?.userInfo?.location);
+      updateFormData('about', data?.userInfo?.description);
+    }
+  }, [data, isError]);
 
   const CreateConfirm = () => {
     setCreateSettings(!CreateSettings);
@@ -158,7 +159,7 @@ const UserProfile = () => {
     <div className="h-full bg-gray-200 p-8">
       <div className="bg-white rounded-lg shadow-xl pb-8">
         <div className='relative'>
-          <div className="absolute right-12 mt-4 rounded "ref={ref}>
+          <div className="absolute right-12 mt-4 rounded " ref={ref}>
             <button onClick={toggleSettings} className="border border-gray-400 p-2 rounded text-gray-300 hover:text-gray-300 bg-gray-100 bg-opacity-10 hover:bg-opacity-20 relative" title="Settings">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -208,7 +209,7 @@ const UserProfile = () => {
           <img src="/image/photo.jpg"
                className="w-40 border-4 border-white rounded-full" alt=""/>
             <div className="flex items-center space-x-2 mt-2">
-              {userInfo?.username&&<p className="text-2xl">{userInfo?.username}</p>}
+              {username&&<p className="text-2xl">{username}</p>}
               <span className="bg-blue-500 rounded-full p-1" title="Verified">
                 <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-100 h-2.5 w-2.5" fill="none"
                    viewBox="0 0 24 24" stroke="currentColor">
@@ -558,15 +559,15 @@ const UserProfile = () => {
             <ul className="mt-2 text-gray-700">
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">NickName:</span>
-                {userInfo?.nickName&&<span className="text-gray-700">{userInfo?.nickName}</span>}
+                {data?.userInfo?.nickname&&<span className="text-gray-700">{data?.userInfo?.nickname}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Apartment:</span>
-                {userInfo?.apartmentValue&&<span className="text-gray-700">{userInfo?.apartmentValue}</span>}
+                {data?.userInfo?.apartment&&<span className="text-gray-700">{data?.userInfo?.apartment}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Position:</span>
-                {userInfo?.positionValue&&<span className="text-gray-700">{userInfo?.positionValue}</span>}
+                {data?.userInfo?.position&&<span className="text-gray-700">{data?.userInfo?.position}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Joined:</span>
@@ -574,21 +575,21 @@ const UserProfile = () => {
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Mobile:</span>
-                {userInfo?.phoneValue&&<span className="text-gray-700">{userInfo?.phoneValue}</span>}
+                {data?.userInfo?.mobile&&<span className="text-gray-700">{data?.userInfo?.mobile}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Email:</span>
-                {userInfo?.emailValue&&<span className="text-gray-700">{userInfo?.emailValue}</span>}
+                {data?.userInfo?.email&&<span className="text-gray-700">{data?.userInfo?.email}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Location:</span>
-                {userInfo?.location&&<span className="text-gray-700">{userInfo?.location}</span>}
+                {data?.userInfo?.location&&<span className="text-gray-700">{data?.userInfo?.location}</span>}
               </li>
             </ul>
           </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
             <h4 className="text-xl text-gray-900 font-bold">About</h4>
-            {userInfo?.about&&<p className="mt-2 text-gray-700">{userInfo?.about}</p>}
+            {data?.userInfo?.description&&<p className="mt-2 text-gray-700">{data?.userInfo?.description}</p>}
           </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
             <h4 className="text-xl text-gray-900 font-bold">Activity log</h4>

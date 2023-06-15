@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import {GET_USERINFO, Personalinfo} from "../api/api";
-import { baseUrl, InterceptorsResponse } from "../api/baseQuery";
+import { GET_USERINFO, Personalinfo } from "../api/api";
+import { baseUrl } from "../api/baseQuery";
 
 const setUserinfoApi = createApi({
+  reducerPath: "setUserinfoApi",
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
@@ -34,10 +35,13 @@ const setUserinfoApi = createApi({
         },
       }),
       getUserInfo: build.query({
-        query: () => GET_USERINFO,
-
+        query() {
+          return GET_USERINFO;
+        }
       }),
     };
   },
 });
 export const { useSetPersonalinfoMutation, useGetUserInfoQuery } = setUserinfoApi;
+
+export default setUserinfoApi;

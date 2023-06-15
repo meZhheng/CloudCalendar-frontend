@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
 import { GET_CAPTCHA, LOGIN, REGISTER, LOGOUT } from "../api/api";
-import { baseUrl, InterceptorsResponse } from "../api/baseQuery";
+import { baseUrl } from "../api/baseQuery";
 
 const loginApi = createApi({
   reducerPath: "loginApi",
@@ -50,11 +50,6 @@ const loginApi = createApi({
         query() {
           return GET_CAPTCHA;
         },
-        // transformResponse 用来转换响应数据的格式
-        // transformResponse(res: any) {
-        //   // console.log(res, "用来转换响应数据的格式....");
-        //   return InterceptorsResponse(res);
-        // },
       }),
     };
   },
