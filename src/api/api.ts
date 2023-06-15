@@ -3,6 +3,7 @@ export const GET_CAPTCHA = '/captcha.php';
 export const LOGIN = '/user/login.php';
 export const REGISTER = '/user/register.php';
 export const LOGOUT = '/user/logout.php';
+export const GET_USERINFO = '/user/getInfo.php'
 export const IMGS = '/imgs';
 export const CATEGORY = '/category';
 export const CreateGroup = '/group/createGroup.php';

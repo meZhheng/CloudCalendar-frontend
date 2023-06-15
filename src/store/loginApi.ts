@@ -51,10 +51,10 @@ const loginApi = createApi({
           return GET_CAPTCHA;
         },
         // transformResponse 用来转换响应数据的格式
-        transformResponse(res: any) {
-          // console.log(res, "用来转换响应数据的格式....");
-          return InterceptorsResponse(res);
-        },
+        // transformResponse(res: any) {
+        //   // console.log(res, "用来转换响应数据的格式....");
+        //   return InterceptorsResponse(res);
+        // },
       }),
     };
   },
