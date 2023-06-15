@@ -10,13 +10,16 @@ const LogoutPage: React.FC = () => {
   const dispatch = useDispatch();
   const [fetchLogout] = useLogoutMutation();
   const username = useSelector((state:any) => state.public.userInfo);
+  const token = localStorage.getItem("userToken") || "";
 
   useEffect(() => {
     (async() =>{
       try {
-        const res: any = await fetchLogout({username: username}).unwrap();
-        if (res?.code === 200) {
-          message.success(res?.message);
+        const res: any = await fetchLogout({username: username, token: token}).unwrap();
+        if (res?.code === 200 || res?.code === 401) {
+          if (res?.code === 200)
+            message.success(res?.message);
+          else message.error(res?.message);
           localStorage.removeItem("userToken");
           dispatch(setLogin("logout"));
           dispatch(setUserInfo(null));

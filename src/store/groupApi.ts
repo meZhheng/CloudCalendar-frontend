@@ -25,5 +25,3 @@ const groupApi = createApi({
   },
 });
 export const { useCreateGroupMutation } = groupApi;
-
-export default groupApi;

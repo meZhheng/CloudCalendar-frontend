@@ -5,9 +5,9 @@ import {useGetCaptchaQuery, useRegisterMutation} from "../store/loginApi";
 import {setLogin, setUserInfo} from "../store/reducer/publicSlice";
 import {useDispatch} from "react-redux";
 const RegisterPage: React.FC = () => {
-  const [username, setUsername] = useState('test')
-  const [password, setPassword] = useState('test')
-  const [confirmPassword, setConfirmPassword] = useState('test')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [captcha, setCaptcha] = useState('')
   const navigate = useNavigate();
 
@@ -50,7 +50,7 @@ const RegisterPage: React.FC = () => {
         localStorage.setItem("userToken", token);
         dispatch(setLogin("login"));
         dispatch(setUserInfo(res?.user));
-        navigate("/profile");
+        navigate("/calendarApp");
       }
        else {
         message.error(res?.message);

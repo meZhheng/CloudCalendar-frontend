@@ -1,34 +1,72 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import {useCreateGroupMutation} from "../store/groupApi";
-import {usePersonalinfoMutation} from "../store/userinfoApi";
-import {message} from "antd";
-import { Description } from '@headlessui/react/dist/components/description/description';
+import { useCreateGroupMutation} from "../store/groupApi";
+import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUserinfoApi";
+import { message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin, setUserInfo } from "../store/reducer/publicSlice";
+import { useNavigate } from "react-router-dom";
 
-const UserProfile = () => {
+const UserProfile: React.FC = () => {
   const [GroupSettings, setGroupSettings] = useState(false);
   const [openSettings, setOpenSettings] = useState(false);
   const [InfoSettings, setInfoSettings] = useState(false);
   const [CreateSettings, setCreateSettings] = useState(false);
   const [JoinSettings, setJoinSettings] = useState(false);
-  const [PhoneValue, setPhoneValue] = useState('123123');
-  const [ApartmentValue, setApartmentValue] = useState('人事部');
-  const [PositionValue, setPositionValue] = useState('人事部经理');
-  const [AboutValue, setAboutValue] = useState('Write something about yourself');
-  const [EmailValue, setEmailValue] = useState('example@sjtu.edu.cn');
-  const [selectedOption, setSelectedOption] = useState('上海');
-  const [username, setUsername] = useState('bloom');
-  const [nickname, setnickname] = useState('Bloom');
+
+  const username = useSelector((state: any) => state.public.userInfo);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const {
+    // 数据
+    data,
+    // 刷新方法
+    refetch: refetchUserInfo,
+    // 判断是否出错
+    isError,
+  } = useGetUserInfoQuery(null, {});
+
+  const [userInfoData, setUserInfoData] = useState({
+    nickName: '',
+    apartmentValue: '',
+    positionValue: '',
+    phoneValue: '',
+    emailValue: '',
+    location: '',
+    about: '',
+  });
+  const updateFormData = (fieldName:string, value:string) => {
+    setUserInfoData((prevFormData) => ({
+      ...prevFormData,
+      [fieldName]: value,
+    }));
+  };
+
   const [groupname, setgroupname] = useState('');
   const [description, setdescription] = useState('');
 
   const [fetchcreateGroup] = useCreateGroupMutation();
-  const [fetchpersonalinfo] = usePersonalinfoMutation();
-  
-
+  const [fetchpersonalinfo] = useSetPersonalinfoMutation();
 
   const ref = useRef(null) as React.MutableRefObject<any>;
   const ref1 = useRef(null) as React.MutableRefObject<any>;
+
+  useEffect(() => {
+    if (isError) {
+      message.error("后端接口连接异常！").then(() => {
+      });
+    }
+    if (data) {
+      updateFormData('nickName', data?.userInfo?.nickname);
+      updateFormData('apartmentValue', data?.userInfo?.apartment);
+      updateFormData('positionValue', data?.userInfo?.position);
+      updateFormData('phoneValue', data?.userInfo?.mobile);
+      updateFormData('emailValue', data?.userInfo?.email);
+      updateFormData('location', data?.userInfo?.location);
+      updateFormData('about', data?.userInfo?.description);
+    }
+  }, [data, isError]);
 
   const CreateConfirm = () => {
     setCreateSettings(!CreateSettings);
@@ -39,24 +77,24 @@ const UserProfile = () => {
   };
 
   const handleSelectChange = (event:any) => {
-    setSelectedOption(event.target.value);
+    updateFormData('location', event.target.value);
   };
 
   const SaveClick = async (e: any) => {
     e.preventDefault();
     const formData = {
-      username: username,
-      nickname: nickname,
-      selectedOption: selectedOption,
-      ApartmentValue: ApartmentValue,
-      PositionValue: PositionValue,
-      PhoneValue: PhoneValue,
-      EmailValue: EmailValue,
-      AboutValue: AboutValue,
+      nickname: userInfoData.nickName,
+      ApartmentValue: userInfoData.apartmentValue,
+      PositionValue: userInfoData.positionValue,
+      PhoneValue: userInfoData.phoneValue,
+      EmailValue: userInfoData.emailValue,
+      selectedOption: userInfoData.location,
+      AboutValue: userInfoData.about,
     }
     try {
       const res: any = await fetchpersonalinfo(formData).unwrap();
       if (res?.code === 200) {
+        refetchUserInfo();
         message.success(res?.message);
       } else {
         message.error(res?.message);
@@ -77,6 +115,12 @@ const UserProfile = () => {
       const res: any = await fetchcreateGroup(formData).unwrap();
       if (res?.code === 200) {
         message.success(res?.message);
+      } else if (res?.code === 401){
+        message.error(res?.message);
+        localStorage.removeItem("userToken");
+        dispatch(setLogin("logout"));
+        dispatch(setUserInfo(null));
+        navigate('/login');
       } else {
         message.error(res?.message);
       }
@@ -101,8 +145,6 @@ const UserProfile = () => {
     setInfoSettings(!InfoSettings);
   };
 
-
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
@@ -113,7 +155,6 @@ const UserProfile = () => {
       }
     };
 
-    
     document.addEventListener('click', handleClickOutside);
 
     return () => {
@@ -126,7 +167,7 @@ const UserProfile = () => {
     <div className="h-full bg-gray-200 p-8">
       <div className="bg-white rounded-lg shadow-xl pb-8">
         <div className='relative'>
-          <div className="absolute right-12 mt-4 rounded "ref={ref}>
+          <div className="absolute right-12 mt-4 rounded " ref={ref}>
             <button onClick={toggleSettings} className="border border-gray-400 p-2 rounded text-gray-300 hover:text-gray-300 bg-gray-100 bg-opacity-10 hover:bg-opacity-20 relative" title="Settings">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
@@ -232,22 +273,6 @@ const UserProfile = () => {
                         </p>
 
                         <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div className="sm:col-span-4">
-                            <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                              User Name
-                            </label>
-                            <div className="mt-2">
-                              <input
-                                id="username"
-                                name="username"
-                                type="username"
-                                value={username}
-                                onChange={e => setUsername(e.target.value)}
-                                autoComplete="off"
-                                className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                              />
-                            </div>
-                          </div>
                           <div className="col-span-full">
                             <label htmlFor="about" className="block text-sm font-medium leading-6 text-gray-900">
                               About
@@ -257,8 +282,8 @@ const UserProfile = () => {
                                 id="about"
                                 name="about"
                                 rows={3}
-                                value={AboutValue}
-                                onChange={e => setAboutValue(e.target.value)}
+                                value={userInfoData.about}
+                                onChange={e => updateFormData('about', e.target.value)}
                                 className="block w-full rounded-md border-0  px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 defaultValue={''}
                                 placeholder="Introduce Yourself"
@@ -266,7 +291,6 @@ const UserProfile = () => {
                             </div>
                             <p className="mt-3 text-sm leading-6 text-gray-600">Write a few sentences about yourself.</p>
                           </div>
-
                           <div className="col-span-full">
                             <label htmlFor="photo" className="block text-sm font-medium leading-6 text-gray-900">
                               Photo(Not available now)
@@ -320,8 +344,8 @@ const UserProfile = () => {
                                 id="nickname"
                                 name="nickname"
                                 type="nickname"
-                                value={nickname}
-                                onChange={e => setnickname(e.target.value)}
+                                value={userInfoData.nickName}
+                                onChange={e => updateFormData('nickName', e.target.value)}
                                 autoComplete="off"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -337,8 +361,8 @@ const UserProfile = () => {
                                 name="Apartment"
                                 id="Apartment"
                                 autoComplete="given-name"
-                                value={ApartmentValue}
-                                onChange={e => setApartmentValue(e.target.value)}
+                                value={userInfoData.apartmentValue}
+                                onChange={e => updateFormData('apartmentValue', e.target.value)}
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
                             </div>
@@ -353,8 +377,8 @@ const UserProfile = () => {
                                 type="text"
                                 name="Position"
                                 id="Position"
-                                value={PositionValue}
-                                onChange={e => setPositionValue(e.target.value)}
+                                value={userInfoData.positionValue}
+                                onChange={e => updateFormData('positionValue', e.target.value)}
                                 autoComplete="family-name"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -370,7 +394,7 @@ const UserProfile = () => {
                                 id="location"
                                 name="location"
                                 autoComplete="Location"
-                                value={selectedOption} 
+                                value={userInfoData.location}
                                 onChange={handleSelectChange}
                                 className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                               >
@@ -391,8 +415,8 @@ const UserProfile = () => {
                                 id="email"
                                 name="email"
                                 type="email"
-                                value={EmailValue}
-                                onChange={e => setEmailValue(e.target.value)}
+                                value={userInfoData.emailValue}
+                                onChange={e => updateFormData('emailValue', e.target.value)}
                                 autoComplete="off"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -408,8 +432,8 @@ const UserProfile = () => {
                                 id="phone"
                                 name="phone"
                                 type="phone"
-                                value={PhoneValue}
-                                onChange={e => setPhoneValue(e.target.value)}
+                                value={userInfoData.phoneValue}
+                                onChange={e => updateFormData('phoneValue', e.target.value)}
                                 autoComplete="off"
                                 className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                               />
@@ -543,15 +567,15 @@ const UserProfile = () => {
             <ul className="mt-2 text-gray-700">
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">NickName:</span>
-                {nickname&&<span className="text-gray-700">{nickname}</span>}
+                {data?.userInfo?.nickname&&<span className="text-gray-700">{data?.userInfo?.nickname}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Apartment:</span>
-                {ApartmentValue&&<span className="text-gray-700">{ApartmentValue}</span>}
+                {data?.userInfo?.apartment&&<span className="text-gray-700">{data?.userInfo?.apartment}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Position:</span>
-                {PositionValue&&<span className="text-gray-700">{PositionValue}</span>}
+                {data?.userInfo?.position&&<span className="text-gray-700">{data?.userInfo?.position}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Joined:</span>
@@ -559,21 +583,21 @@ const UserProfile = () => {
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Mobile:</span>
-                {PhoneValue&&<span className="text-gray-700">{PhoneValue}</span>}
+                {data?.userInfo?.mobile&&<span className="text-gray-700">{data?.userInfo?.mobile}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Email:</span>
-                {EmailValue&&<span className="text-gray-700">{EmailValue}</span>}
+                {data?.userInfo?.email&&<span className="text-gray-700">{data?.userInfo?.email}</span>}
               </li>
               <li className="flex border-b py-2">
                 <span className="font-bold w-24">Location:</span>
-                {selectedOption&&<span className="text-gray-700">{selectedOption}</span>}
+                {data?.userInfo?.location&&<span className="text-gray-700">{data?.userInfo?.location}</span>}
               </li>
             </ul>
           </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
             <h4 className="text-xl text-gray-900 font-bold">About</h4>
-            {AboutValue&&<p className="mt-2 text-gray-700">{AboutValue}</p>}
+            {data?.userInfo?.description&&<p className="mt-2 text-gray-700">{data?.userInfo?.description}</p>}
           </div>
           <div className="flex-1 bg-white rounded-lg shadow-xl mt-4 p-8">
             <h4 className="text-xl text-gray-900 font-bold">Activity log</h4>

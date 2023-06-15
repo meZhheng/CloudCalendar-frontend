@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import reducer from "./reducer";
-import mdApi from "./mdApi";
+import setUserinfoApi from "./setUserinfoApi";
 import loginApi from "./loginApi";
 
 const persistConfig = {
@@ -12,7 +12,7 @@ const persistConfig = {
 };
 
 const sliceReducer = combineReducers({
-  [mdApi.reducerPath]: mdApi.reducer,
+  [setUserinfoApi.reducerPath]: setUserinfoApi.reducer,
   [loginApi.reducerPath]: loginApi.reducer,
   ...reducer,
 });
@@ -23,7 +23,7 @@ const store = configureStore({
   reducer: persistedReducer,
   // middleware: (middle) => middle().concat([ loginApi.middleware, homeApi.middleware ])
   middleware: (middle) =>
-    middle().concat([mdApi.middleware, loginApi.middleware]),
+    middle().concat([setUserinfoApi.middleware, loginApi.middleware]),
 });
 
 const persistor = persistStore(store);

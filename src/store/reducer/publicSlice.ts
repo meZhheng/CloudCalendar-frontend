@@ -38,5 +38,5 @@ const publicSlice = createSlice({
   },
 });
 
-export const { setMdDocument, setUserInfo , setLogin} = publicSlice.actions;
+export const {setUserInfo , setLogin} = publicSlice.actions;
 export const { reducer: publicReducer } = publicSlice;
