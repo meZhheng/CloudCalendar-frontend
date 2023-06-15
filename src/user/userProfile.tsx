@@ -2,8 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useCreateGroupMutation} from "../store/groupApi";
 import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUserinfoApi";
-import {message} from "antd";
-import {useSelector} from "react-redux";
+import { message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { setLogin, setUserInfo } from "../store/reducer/publicSlice";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile: React.FC = () => {
   const [GroupSettings, setGroupSettings] = useState(false);
@@ -13,7 +15,8 @@ const UserProfile: React.FC = () => {
   const [JoinSettings, setJoinSettings] = useState(false);
 
   const username = useSelector((state: any) => state.public.userInfo);
-  const token = localStorage.getItem("userToken") || "";
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     // 数据
@@ -80,7 +83,6 @@ const UserProfile: React.FC = () => {
   const SaveClick = async (e: any) => {
     e.preventDefault();
     const formData = {
-      token: token,
       nickname: userInfoData.nickName,
       ApartmentValue: userInfoData.apartmentValue,
       PositionValue: userInfoData.positionValue,
@@ -113,6 +115,12 @@ const UserProfile: React.FC = () => {
       const res: any = await fetchcreateGroup(formData).unwrap();
       if (res?.code === 200) {
         message.success(res?.message);
+      } else if (res?.code === 401){
+        message.error(res?.message);
+        localStorage.removeItem("userToken");
+        dispatch(setLogin("logout"));
+        dispatch(setUserInfo(null));
+        navigate('/login');
       } else {
         message.error(res?.message);
       }
