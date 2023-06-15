@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { useCreateGroupMutation} from "../store/groupApi";
+import {useCreateGroupMutation, useJoinGroupMutation} from "../store/groupApi";
 import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUserinfoApi";
 import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,8 +45,10 @@ const UserProfile: React.FC = () => {
 
   const [groupname, setgroupname] = useState('');
   const [description, setdescription] = useState('');
+  const [groupCode, setGroupCode] = useState('')
 
   const [fetchcreateGroup] = useCreateGroupMutation();
+  const [fetchJoinGroup] = useJoinGroupMutation();
   const [fetchpersonalinfo] = useSetPersonalinfoMutation();
 
   const ref = useRef(null) as React.MutableRefObject<any>;
@@ -72,7 +74,18 @@ const UserProfile: React.FC = () => {
     setCreateSettings(!CreateSettings);
   };
 
-  const JoinConfirm = () => {
+  const JoinConfirm = async (e: any) => {
+    e.preventDefault();
+    try {
+      const res: any = await fetchJoinGroup({groupCode: groupCode}).unwrap();
+      if (res?.code === 200) {
+        message.success(res?.message);
+      } else {
+        message.error(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     setJoinSettings(false);
   };
 
@@ -718,12 +731,12 @@ const UserProfile: React.FC = () => {
                                     </label>
                                     <div className="mt-2">
                                       <input
-                                        id="groupname"
-                                        name="groupname"
-                                        type="groupname"
+                                        id="groupCode"
+                                        name="groupCode"
+                                        type="groupCode"
                                         autoComplete="off"
-                                        value={groupname}
-                                        onChange={e => setgroupname(e.target.value)}
+                                        value={groupCode}
+                                        onChange={e => setGroupCode(e.target.value)}
                                         className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                       />
                                     </div>
@@ -794,6 +807,8 @@ const UserProfile: React.FC = () => {
                                         id="groupnumber"
                                         name="groupnumber"
                                         type="groupnumber"
+                                        value={groupname}
+                                        onChange={e => setgroupname(e.target.value)}
                                         autoComplete="off"
                                         className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                       />

@@ -4,10 +4,11 @@ export const LOGIN = '/user/login.php';
 export const REGISTER = '/user/register.php';
 export const LOGOUT = '/user/logout.php';
 export const GET_USERINFO = '/user/getInfo.php'
+export const Personalinfo = '/user/personalinfo.php';
 export const IMGS = '/imgs';
 export const CATEGORY = '/category';
 export const CreateGroup = '/group/createGroup.php';
-export const Personalinfo = '/user/personalinfo.php';
+export const JOIN_GROUP = '/group/joinGroup.php';
 
 // 全部mv
 export const CAT_LIST = '/mv/all';
