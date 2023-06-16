@@ -15,16 +15,16 @@ export interface RouteConfig {
   redirect?:string
 }
 export const routers = [
-  { path: "/login", element: <LoginPage />, auth: true },
+  { path: "/login", element: <LoginPage />, auth: false },
   { path: "/logout", element: <LogoutPage />, auth: true },
-  { path: "/register", element: <RegisterPage />, auth: true },
+  { path: "/register", element: <RegisterPage />, auth: false },
   {
     path: "/",
     element: <LayoutPage />,
-    auth: true,
+    auth: false,
     children:[
       { path: "calendarApp", element: <CalendarApp />, auth: true },
-      { path: "profile", element: <UserProfile />, auth: true },
+      { path: "profile", element: <UserProfile />, auth: false },
       { path: "*", element: <NotFound />, auth: true },
     ]
   },
