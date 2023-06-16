@@ -15,6 +15,7 @@ const UserProfile: React.FC = () => {
   const [CreateSettings, setCreateSettings] = useState(false);
   const [JoinSettings, setJoinSettings] = useState(false);
   const [Code, setCode] = useState(false);
+  const [selectedPost, setSelectedPost] = useState({id:0, groupName: "NULL", groupCode:"NULL", groupMemberNum: "NULL", groupMembers: "NULL"});
 
   const username = useSelector((state: any) => state.public.userInfo);
   const navigate = useNavigate();
@@ -883,7 +884,15 @@ const UserProfile: React.FC = () => {
           {GroupInfo.map((post:any) => 
             <div key={post.id} className='mt-10'>
               <div className="flex items-center justify-between">
-                <button className="text-xl text-gray-900 font-bold" onClick={LookCode}>{post.id + '. ' + post.groupName}</button>
+                <button 
+                  className="text-xl text-gray-900 font-bold" 
+                  onClick={() => {
+                    setSelectedPost(post);
+                    LookCode();
+                  }}
+                >
+                  {post.id + '. ' + post.groupName}
+                </button>
               </div>
               {Code&&(
                 <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
@@ -894,7 +903,7 @@ const UserProfile: React.FC = () => {
                           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">               
                             <div className="sm:col-span-4">
                               <div className="mt-2">
-                                <span className="block text-sm font-medium leading-6 text-gray-900 text-center">{post.groupCode}</span>
+                                <span className="block text-sm font-medium leading-6 text-gray-900 text-center">{selectedPost && selectedPost.groupCode ? selectedPost.groupCode : ""}</span>
                               </div>
                             </div>        
                           </div>
