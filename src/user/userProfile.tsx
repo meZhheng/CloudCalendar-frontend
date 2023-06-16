@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useCreateGroupMutation} from "../store/groupApi";
 import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUserinfoApi";
+import { useGetMemberQuery } from "../store/getMemberApi";
 import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setUserInfo } from "../store/reducer/publicSlice";
@@ -26,6 +27,15 @@ const UserProfile: React.FC = () => {
     // 判断是否出错
     isError,
   } = useGetUserInfoQuery(null, {});
+
+  const {
+    //数据
+    data:groupmember,
+     // 刷新方法
+     refetch: refetchMember,
+     // 判断是否出错
+     isError:groupmemberError,
+  } = useGetMemberQuery(null, {});
 
   const [userInfoData, setUserInfoData] = useState({
     nickName: '',
@@ -68,6 +78,19 @@ const UserProfile: React.FC = () => {
     }
   }, [data, isError]);
 
+  useEffect(() => {
+    if (isError) {
+      message.error("后端接口连接异常！").then(() => {
+      });
+    }
+    if(groupmember){
+
+    }
+  },[groupmember,groupmemberError]);
+
+
+
+
   const CreateConfirm = () => {
     setCreateSettings(!CreateSettings);
   };
@@ -95,6 +118,7 @@ const UserProfile: React.FC = () => {
       const res: any = await fetchpersonalinfo(formData).unwrap();
       if (res?.code === 200) {
         refetchUserInfo();
+        refetchMember();
         message.success(res?.message);
       } else {
         message.error(res?.message);
