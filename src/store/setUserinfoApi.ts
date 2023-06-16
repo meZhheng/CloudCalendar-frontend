@@ -7,7 +7,6 @@ const setUserinfoApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
-      // 在这里可以为headers添加额外的信息
       const token = localStorage.getItem("userToken") || "";
       const username = (getState() as any).public.userInfo;
       if (token !== "") {

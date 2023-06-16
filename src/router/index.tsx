@@ -21,11 +21,11 @@ export const routers = [
   {
     path: "/",
     element: <LayoutPage />,
-    auth: true,
+    auth: false,
     children:[
       { path: "calendarApp", element: <CalendarApp />, auth: true },
-      { path: "profile", element: <UserProfile />, auth: true },
-      { path: "*", element: <NotFound />, auth: false },
+      { path: "profile", element: <UserProfile />, auth: false },
+      { path: "*", element: <NotFound />, auth: true },
     ]
   },
 ];

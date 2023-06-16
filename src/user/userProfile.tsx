@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { useCreateGroupMutation} from "../store/groupApi";
+import {useCreateGroupMutation, useJoinGroupMutation} from "../store/groupApi";
 import { useSetPersonalinfoMutation, useGetUserInfoQuery} from "../store/setUserinfoApi";
 import { useGetMemberQuery } from "../store/getMemberApi";
 import { message } from "antd";
@@ -14,6 +14,7 @@ const UserProfile: React.FC = () => {
   const [InfoSettings, setInfoSettings] = useState(false);
   const [CreateSettings, setCreateSettings] = useState(false);
   const [JoinSettings, setJoinSettings] = useState(false);
+  const [Code, setCode] = useState(false);
 
   const username = useSelector((state: any) => state.public.userInfo);
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const UserProfile: React.FC = () => {
 
   const {
     //数据
-    data:groupmember,
+    data:groupInfo,
      // 刷新方法
      refetch: refetchMember,
      // 判断是否出错
@@ -55,8 +56,10 @@ const UserProfile: React.FC = () => {
 
   const [groupname, setgroupname] = useState('');
   const [description, setdescription] = useState('');
+  const [groupCode, setGroupCode] = useState('')
 
   const [fetchcreateGroup] = useCreateGroupMutation();
+  const [fetchJoinGroup] = useJoinGroupMutation();
   const [fetchpersonalinfo] = useSetPersonalinfoMutation();
 
   const ref = useRef(null) as React.MutableRefObject<any>;
@@ -78,24 +81,43 @@ const UserProfile: React.FC = () => {
     }
   }, [data, isError]);
 
+  const [GroupInfo, setGroupInfo] = useState([]);
+
   useEffect(() => {
     if (isError) {
       message.error("后端接口连接异常！").then(() => {
       });
     }
-    if(groupmember){
-
+    if(groupInfo){
+      const newGroupInfo = groupInfo.userInfo.map((item:any,index:any) => ({
+        id: index + 1,
+        groupName: item.groupName,
+        groupCode: item.groupCode,
+        groupMemberNum: item.groupMemberNum,
+        groupMembers: item.groupMembers,
+      }));
+      setGroupInfo(newGroupInfo);
     }
-  },[groupmember,groupmemberError]);
-
-
+  },[groupInfo,groupmemberError]);
 
 
   const CreateConfirm = () => {
     setCreateSettings(!CreateSettings);
   };
 
-  const JoinConfirm = () => {
+  const JoinConfirm = async (e: any) => {
+    e.preventDefault();
+    try {
+      const res: any = await fetchJoinGroup({groupCode: groupCode}).unwrap();
+      if (res?.code === 200) {
+        refetchMember();
+        message.success(res?.message);
+      } else {
+        message.error(res?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
     setJoinSettings(false);
   };
 
@@ -131,7 +153,6 @@ const UserProfile: React.FC = () => {
   const CreateGroup = async (e: any) => {
     e.preventDefault();
     const formData = {
-        username: username,
         groupname: groupname,
         description: description,
     }
@@ -159,6 +180,11 @@ const UserProfile: React.FC = () => {
 
   const JoinGroup = () => {
     setJoinSettings(!JoinSettings);
+  };
+
+
+  const LookCode = () => {
+    setCode(!Code);   
   };
 
   const toggleSettings = () => {
@@ -742,9 +768,9 @@ const UserProfile: React.FC = () => {
                                     </label>
                                     <div className="mt-2">
                                       <input
-                                        id="groupname"
-                                        name="groupname"
-                                        type="groupname"
+                                        id="groupName"
+                                        name="groupName"
+                                        type="groupName"
                                         autoComplete="off"
                                         value={groupname}
                                         onChange={e => setgroupname(e.target.value)}
@@ -818,6 +844,8 @@ const UserProfile: React.FC = () => {
                                         id="groupnumber"
                                         name="groupnumber"
                                         type="groupnumber"
+                                        value={groupCode}
+                                        onChange={e => setGroupCode(e.target.value)}
                                         autoComplete="off"
                                         className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                       />
@@ -850,64 +878,52 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center justify-between">
-            <h4 className="text-xl text-gray-900 font-bold">Connections (532)</h4>
-          </div>
-          <div
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8">
+                <h4 className="text-xl text-gray-900 font-bold">Group Message</h4>
+              </div>
+          {GroupInfo.map((post:any) => 
+            <div key={post.id} className='mt-10'>
+              <div className="flex items-center justify-between">
+                <button className="text-xl text-gray-900 font-bold" onClick={LookCode}>{post.id + '. ' + post.groupName}</button>
+              </div>
+              {Code&&(
+                <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
+                  <div className="bg-white p-4 w-1/2 h-7/9 overflow-y-auto">
+                      <div className="space-y-12">        
+                        <div className="border-b border-gray-900/10 pb-12">
+                          <h2 className="text-base font-semibold leading-7 text-gray-900">Group Code</h2>                                      
+                          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">               
+                            <div className="sm:col-span-4">
+                              <div className="mt-2">
+                                <span className="block text-sm font-medium leading-6 text-gray-900 text-center">{post.groupCode}</span>
+                              </div>
+                            </div>        
+                          </div>
+                        </div>
+  
+                      </div>
+                      <div className="mt-6 flex items-center justify-end gap-x-6">
+                        <button type="button" onClick={() => setCode(false)} className="text-sm font-semibold leading-6 text-gray-900">
+                          Cancel
+                        </button>
+                      </div>
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-8 mt-8">
+                {Array.from({ length: post.groupMemberNum }).map((_, index) => (
+                  <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600" title="View Profile">
+                  <img src={`https://vojislavd.com/ta-template-demo/assets/img/connections/connection${index + 1}.jpg`} className="w-16 rounded-full" alt="" />
+                  <p className="text-center font-bold text-sm mt-1">{post.groupMembers[index]}</p>
+                  <p className="text-xs text-gray-500 text-center">Team member</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-            <a href="#" className="flex flex-col items-center justify-center text-gray-800 hover:text-blue-600"
-               title="View Profile">
-              <img src="https://vojislavd.com/ta-template-demo/assets/img/connections/connection16.jpg"
-                   className="w-16 rounded-full" alt=""/>
-                <p className="text-center font-bold text-sm mt-1">Joseph Marlatt</p>
-                <p className="text-xs text-gray-500 text-center">Team Lead at Facebook</p>
-            </a>
-          </div>
         </div>
       </div>
-    </div>
+    </div> 
     </body>
   )
 }

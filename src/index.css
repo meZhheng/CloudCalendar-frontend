@@ -714,6 +714,14 @@ video {
   margin-top: auto;
 }
 
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
 .box-border {
   box-sizing: border-box;
 }
