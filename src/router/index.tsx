@@ -15,9 +15,9 @@ export interface RouteConfig {
   redirect?:string
 }
 export const routers = [
-  { path: "/login", element: <LoginPage />, auth: false },
+  { path: "/login", element: <LoginPage />, auth: true },
   { path: "/logout", element: <LogoutPage />, auth: true },
-  { path: "/register", element: <RegisterPage />, auth: false },
+  { path: "/register", element: <RegisterPage />, auth: true },
   {
     path: "/",
     element: <LayoutPage />,
@@ -25,7 +25,7 @@ export const routers = [
     children:[
       { path: "calendarApp", element: <CalendarApp />, auth: true },
       { path: "profile", element: <UserProfile />, auth: true },
-      { path: "*", element: <NotFound />, auth: false },
+      { path: "*", element: <NotFound />, auth: true },
     ]
   },
 ];
