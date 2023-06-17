@@ -57,6 +57,7 @@ const UserProfile: React.FC = () => {
 
   const [groupname, setgroupname] = useState('');
   const [description, setdescription] = useState('');
+  const [groupColor, setgroupColor] = useState('');
   const [groupCode, setGroupCode] = useState('')
 
   const [fetchcreateGroup] = useCreateGroupMutation();
@@ -754,11 +755,15 @@ const UserProfile: React.FC = () => {
                                         id="location"
                                         name="location"
                                         autoComplete="Location"
+                                        value={groupColor}
+                                        onChange={e => setgroupColor(e.target.value)}
                                         className="block w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
                                       >
                                         <option>Work</option>
+                                        <option>DailyLife</option>
                                         <option>Travel</option>
                                         <option>Study</option>
+                                        <option>Exercise</option>
                                       </select>
                                     </div>
                                   </div>

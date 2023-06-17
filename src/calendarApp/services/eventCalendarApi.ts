@@ -13,6 +13,7 @@ interface ICreateEventCalendar {
     start: string;
     backgroundColor: string;
     textColor: string;
+    selectedOptions: string[];
   };
 }
 

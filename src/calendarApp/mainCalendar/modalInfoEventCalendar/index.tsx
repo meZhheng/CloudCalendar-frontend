@@ -1,16 +1,25 @@
-import { Button, Modal, TextField } from '@mui/material';
-import { Key, useEffect, useState} from 'react';
+import { useState, useEffect } from 'react';
+import { Modal, TextField, Button } from '@mui/material';
+import { Key } from 'react';
 import { message } from 'antd';
 import { ListColorsCard } from '../../styles';
 import {
   deleteEventCalendar
 } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
+import { useGetGroupIdMutation } from "../../../store/shareGroupIdApi";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation } from "../../../store/eventApi";
+import Radio from '@mui/material/Radio';
 
 interface ICardColor {
   backgroundColor: string;
   textColor: string;
+}
+
+interface GroupOption {
+  id: string;
+  name: string;
 }
 
 interface IModalInfosEventCalendaryProps {
@@ -21,16 +30,39 @@ interface IModalInfosEventCalendaryProps {
 }
 
 export const ModalInfosEventCalendar = ({
-                                          handleClose,
-                                          open,
-                                          eventInfos,
-                                          isEditCard,
-                                        }: IModalInfosEventCalendaryProps) => {
+  handleClose,
+  open,
+  eventInfos,
+  isEditCard,
+}: IModalInfosEventCalendaryProps) => {
   const [title, setTitle] = useState<string>('');
   const [cardColor, setCardColor] = useState<ICardColor>({
     backgroundColor: '#039be5',
     textColor: '#ffffff',
   });
+  const [ selectedOptions, setSelectedOptions ] = useState<string>('');
+  const [ fetchGetGroupId ] = useGetGroupIdMutation();
+
+  const [GroupInfo, setGroupInfo] = useState<GroupOption[]>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res:any = await fetchGetGroupId({}).unwrap();
+        if (res?.code === 200) {
+          const groupInfo = res?.groupInfo;
+          setGroupInfo(groupInfo);
+          console.log(GroupInfo);
+        } else {
+          message.error(res?.message);
+        }
+      } catch (error) {
+        console.error('Error fetching groupId:', error);
+      }
+    };
+    if(open) {
+      fetchData();
+    }
+  }, [open]);
 
   const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
   const [ fetchCreateEventCalendar ] = useCreateEventCalendarMutation();
@@ -44,7 +76,7 @@ export const ModalInfosEventCalendar = ({
       });
     } else {
       setTitle('');
-      setCardColor({backgroundColor: '#039be5', textColor: '#ffffff'});
+      setCardColor({ backgroundColor: '#039be5', textColor: '#ffffff' });
     }
   }, [eventInfos, isEditCard]);
 
@@ -55,17 +87,22 @@ export const ModalInfosEventCalendar = ({
     });
   };
 
+  const handleOptionChange = (option: string) => {
+    setSelectedOptions(option);
+  };
+
   const handleAddedEvent = async () => {
     try {
       const calendarApi = eventInfos.view.calendar;
 
       const res = await fetchCreateEventCalendar({
         eventCalendar: {
-          title: title === '' ? 'Sem título' : title,
+          title: title === '' ? '无标题' : title,
           start: eventInfos.startStr,
           end: eventInfos.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
+          selectedOptions: selectedOptions,
         },
       }).unwrap();
 
@@ -83,21 +120,23 @@ export const ModalInfosEventCalendar = ({
         message.error(res?.message);
       }
     } catch (err) {
-      message.error('Houve um erro ao criar um evento');
+      message.error('There was an error creating an event');
     } finally {
       setTitle('');
+      setSelectedOptions('');
       handleClose();
     }
   };
 
   const handleDeleteEvent = async () => {
     try {
-      await deleteEventCalendar({id: eventInfos.event.id});
+      await deleteEventCalendar({ id: eventInfos.event.id });
       eventInfos.event.remove();
     } catch (error) {
-      message.error('Houve um erro ao deletar o evento');
+      message.error('There was an error deleting an event');
     } finally {
       setTitle('');
+      setSelectedOptions('');
       handleClose();
     }
   };
@@ -109,18 +148,19 @@ export const ModalInfosEventCalendar = ({
       const eventCalendarUpdated = {
         eventCalendar: {
           _id: eventInfos.event.id,
-          title: title !== '' ? title : 'Sem título',
+          title: title !== '' ? title : '无标题',
           start: eventInfos.event.startStr,
           end: eventInfos.event.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
+          selectedOptions: selectedOptions,
         },
       };
 
       const currentEvent = calendarApi.getEventById(eventInfos.event.id);
 
       if (currentEvent) {
-        currentEvent.setProp('title', title !== '' ? title : 'Sem título');
+        currentEvent.setProp('title', title !== '' ? title : '无标题');
         currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
         currentEvent.setProp('textColor', cardColor.textColor);
       }
@@ -132,9 +172,10 @@ export const ModalInfosEventCalendar = ({
         message.error(res?.message);
       }
     } catch (error) {
-      message.error('Houve um erro ao atualizar o evento');
+      message.error('更新事件时出现错误');
     } finally {
       setTitle('');
+      setSelectedOptions('');
       handleClose();
     }
   };
@@ -142,7 +183,7 @@ export const ModalInfosEventCalendar = ({
   return (
     <Modal open={open} onClose={handleClose}>
       <BoxContainer>
-        <TextField label={'Adicionar título'} value={title} onChange={(e) => setTitle(e.target.value)} fullWidth/>
+        <TextField label={'日程计划'} value={title} onChange={(e) => setTitle(e.target.value)} fullWidth />
 
         <SelectColors>
           {ListColorsCard.map((color: ICardColor, index: Key | null | undefined) => (
@@ -161,19 +202,33 @@ export const ModalInfosEventCalendar = ({
           ))}
         </SelectColors>
 
-
+        <div>
+          {GroupInfo.map((option: GroupOption) => (
+            <FormControlLabel
+                key={option.id}
+                control={
+                  <Radio
+                    checked={selectedOptions === option.id}
+                    onChange={() => handleOptionChange(option.id)}
+                  />
+                }
+                label={`${option.name}`}
+              />
+          ))}
+        </div>
+        
         <Button
           variant="contained"
           fullWidth
           onClick={isEditCard ? handleUpdatedEvent : handleAddedEvent}
           sx={{ marginTop: '0.5rem' }}
         >
-          {isEditCard ? 'Atualizar evento' : 'Adicionar evento'}
+          {isEditCard ? '更新事件' : '添加事件'}
         </Button>
 
         {isEditCard && (
           <Button variant="contained" fullWidth sx={{ marginTop: '0.5rem' }} onClick={handleDeleteEvent}>
-            Excluir evento
+            删除事件
           </Button>
         )}
       </BoxContainer>

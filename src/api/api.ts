@@ -11,3 +11,5 @@ export const UPDATE_EVENT = '/event/updateEvent.php'
 export const CREATE_EVENT = '/event/createEvent.php'
 export const GET_EVENTS = '/event/getEvents.php'
 export const DELETE_EVENT = '/event/deleteEvent.php'
+export const GET_GROUPID = '/event/getGroupId.php'
+

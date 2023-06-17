@@ -8,6 +8,7 @@ import { useState } from "react";
 import { message } from "antd";
 import { IEventCalendar } from "../domain";
 import { useUpdateEventCalendarMutation } from "../../store/eventApi";
+// import React from 'react';
 
 type CalendarSchedulerProps = {
   eventsCalendar: IEventCalendar[];
@@ -62,6 +63,15 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
     }
   };
 
+  const customButton1ClickHandler = () => {
+
+  };
+
+  const customButton2ClickHandler = () => {
+    // 自定义按钮2的点击事件处理逻辑
+    console.log('Custom Button 2 clicked');
+  };
+
   return (
     <div className="flex min-h-full min-w-full">
       <ModalInfosEventCalendar
@@ -70,31 +80,43 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         eventInfos={eventInfos}
         isEditCard={isEditCard}
       />
-      <div className="flex flex-col flex-grow min-h-full min-w-full items-center">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
-          initialView="dayGridMonth"
-          locale="zh-cn"
-          editable={true}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          weekends={weekends.weekendsVisible}
-          initialEvents={eventsCalendar}
-          select={handleAddEventSelectAndOpenModal}
-          eventClick={handleEditEventSelectAndOpenModal}
-          eventChange={handleUpdateEventSelect}
-          longPressDelay={1000}
-          eventLongPressDelay={1000}
-          selectLongPressDelay={1000}
-          allDaySlot={false}
-          height="100%"
-        />
+      <div className="flex flex-col flex-grow h-screen w-screen items-center">
+        <div style={{ width: '90%', height:'100%'}}>
+          <FullCalendar
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            headerToolbar={{
+              left:"prev,next today",
+              center: "title",
+              right: "dayGridMonth,timeGridWeek,timeGridDay customButton2,customButton1",
+            }}
+            initialView="dayGridMonth"
+            locale="zh-cn"
+            editable={true}
+            selectable={true}
+            selectMirror={true}
+            dayMaxEvents={true}
+            weekends={weekends.weekendsVisible}
+            initialEvents={eventsCalendar}
+            select={handleAddEventSelectAndOpenModal}
+            eventClick={handleEditEventSelectAndOpenModal}
+            eventChange={handleUpdateEventSelect}
+            longPressDelay={1000}
+            eventLongPressDelay={1000}
+            selectLongPressDelay={1000}
+            allDaySlot={false}
+            height="100%"
+            customButtons={{
+              customButton1: {
+                text: 'Log Out',
+                click: customButton1ClickHandler,
+              },
+              customButton2: {
+                text: 'Profile',
+                click: customButton2ClickHandler,
+              },
+            }}
+          />
+        </div>
       </div>
     </div>
   );
