@@ -10,6 +10,8 @@ export const CATEGORY = '/category';
 export const CreateGroup = '/group/createGroup.php';
 export const GETMEMBER = '/user/getMember.php';
 export const JOIN_GROUP = '/group/joinGroup.php';
+export const ADD_EVENT = '/group/addEvent.php';
+export const UPDATE_EVENT = '/group/updateEvent.php';
 
 // 全部mv
 export const CAT_LIST = '/mv/all';
