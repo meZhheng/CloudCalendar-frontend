@@ -72,10 +72,10 @@ export const ModalInfosEventCalendar = ({
       if (res?.code === 200) {
         message.success(res?.message);
         calendarApi.addEvent({
-          id: res?._id,
-          title: res?.title,
-          start: res?.start,
-          end: res?.endStr,
+          id: res?.schedule?._id,
+          title: res?.schedule?.title,
+          start: res?.schedule?.start,
+          end: res?.schedule?.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
         });
@@ -160,6 +160,7 @@ export const ModalInfosEventCalendar = ({
             </BackgroundColorRounded>
           ))}
         </SelectColors>
+
 
         <Button
           variant="contained"

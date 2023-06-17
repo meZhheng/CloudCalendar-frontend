@@ -5,10 +5,12 @@ import {CREATE_EVENT, GET_USERINFO, UPDATE_EVENT} from "../api/api";
 interface IEventCreateResponse {
   code: number;
   message: string;
-  _id: string;
-  title: string;
-  start: string;
-  endStr: string;
+  schedule: {
+    _id: string;
+    title: string;
+    start: string;
+    endStr: string;
+  }
 }
 
 interface IEventCreateArgs {
