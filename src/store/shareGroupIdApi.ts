@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/dist/query/react";
-import { SET_GROUPID, GET_GROUPID } from "../api/api";
+import { GET_GROUPID } from "../api/api";
 import { baseUrl } from "../api/baseQuery";
 
 const groupEventApi = createApi({

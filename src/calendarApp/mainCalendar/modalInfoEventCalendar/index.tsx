@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Container, TextField, Button } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Modal, TextField, Button } from '@mui/material';
 import { Key } from 'react';
 import { message } from 'antd';
 import { ListColorsCard } from '../../styles';
@@ -8,11 +8,18 @@ import {
 } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 import { useGetGroupIdMutation } from "../../../store/shareGroupIdApi";
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation } from "../../../store/eventApi";
+import Radio from '@mui/material/Radio';
 
 interface ICardColor {
   backgroundColor: string;
   textColor: string;
+}
+
+interface GroupOption {
+  id: string;
+  name: string;
 }
 
 interface IModalInfosEventCalendaryProps {
@@ -33,15 +40,21 @@ export const ModalInfosEventCalendar = ({
     backgroundColor: '#039be5',
     textColor: '#ffffff',
   });
-  const [ selectedOptions, setSelectedOptions ] = useState<string[]>([]);
+  const [ selectedOptions, setSelectedOptions ] = useState<string>('');
   const [ fetchGetGroupId ] = useGetGroupIdMutation();
 
+  const [GroupInfo, setGroupInfo] = useState<GroupOption[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const groupId = await fetchGetGroupId({}).unwrap();
-        console.log('Received groupId from backend:', groupId);
-        // 在这里处理 groupId，可以存储到状态中或进行其他操作
+        const res:any = await fetchGetGroupId({}).unwrap();
+        if (res?.code === 200) {
+          const groupInfo = res?.groupInfo;
+          setGroupInfo(groupInfo);
+          console.log(GroupInfo);
+        } else {
+          message.error(res?.message);
+        }
       } catch (error) {
         console.error('Error fetching groupId:', error);
       }
@@ -74,12 +87,8 @@ export const ModalInfosEventCalendar = ({
     });
   };
 
-  const handleCheckboxChange = (option: string) => {
-    if (selectedOptions.includes(option)) {
-      setSelectedOptions(selectedOptions.filter((item) => item !== option));
-    } else {
-      setSelectedOptions([...selectedOptions, option]);
-    }
+  const handleOptionChange = (option: string) => {
+    setSelectedOptions(option);
   };
 
   const handleAddedEvent = async () => {
@@ -114,7 +123,7 @@ export const ModalInfosEventCalendar = ({
       message.error('There was an error creating an event');
     } finally {
       setTitle('');
-      setSelectedOptions([]);
+      setSelectedOptions('');
       handleClose();
     }
   };
@@ -124,10 +133,10 @@ export const ModalInfosEventCalendar = ({
       await deleteEventCalendar({ id: eventInfos.event.id });
       eventInfos.event.remove();
     } catch (error) {
-      message.error('Houve um erro ao deletar o evento');
+      message.error('There was an error deleting an event');
     } finally {
       setTitle('');
-      setSelectedOptions([]);
+      setSelectedOptions('');
       handleClose();
     }
   };
@@ -166,7 +175,7 @@ export const ModalInfosEventCalendar = ({
       message.error('更新事件时出现错误');
     } finally {
       setTitle('');
-      setSelectedOptions([]);
+      setSelectedOptions('');
       handleClose();
     }
   };
@@ -192,17 +201,21 @@ export const ModalInfosEventCalendar = ({
             </BackgroundColorRounded>
           ))}
         </SelectColors>
-        
-        {selectedOptions.map((option:any) => (
-          <div key={option.id}>
-            <input
-              type="checkbox"
-              checked={selectedOptions.includes(option.id)}
-              onChange={() => handleCheckboxChange(option.id)}
-            />
-            <label>{option.label}</label>
-          </div>
-        ))}
+
+        <div>
+          {GroupInfo.map((option: GroupOption) => (
+            <FormControlLabel
+                key={option.id}
+                control={
+                  <Radio
+                    checked={selectedOptions === option.id}
+                    onChange={() => handleOptionChange(option.id)}
+                  />
+                }
+                label={`${option.name}`}
+              />
+          ))}
+        </div>
         
         <Button
           variant="contained"

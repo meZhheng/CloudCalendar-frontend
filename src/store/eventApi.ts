@@ -20,6 +20,7 @@ interface IEventCreateArgs {
     end: string;
     backgroundColor: string;
     textColor: string;
+    selectedOptions: string;
   }
 }
 
