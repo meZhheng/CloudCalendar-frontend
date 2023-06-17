@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Container, TextField, Button } from '@mui/material';
 import { Key } from 'react';
-import { toast } from 'react-toastify';
-import { ListColorsCard } from '../../types';
+import { message } from 'antd';
+import { ListColorsCard } from '../../styles';
 import {
-  createEventCalendar,
-  deleteEventCalendar,
-  updateEventCalendar,
+  deleteEventCalendar
 } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 import { useGetGroupIdMutation } from "../../../store/shareGroupIdApi";
+import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation } from "../../../store/eventApi";
 
 interface ICardColor {
   backgroundColor: string;
@@ -34,7 +33,7 @@ export const ModalInfosEventCalendar = ({
     backgroundColor: '#039be5',
     textColor: '#ffffff',
   });
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [ selectedOptions, setSelectedOptions ] = useState<string[]>([]);
   const [ fetchGetGroupId ] = useGetGroupIdMutation();
 
   useEffect(() => {
@@ -51,6 +50,9 @@ export const ModalInfosEventCalendar = ({
       fetchData();
     }
   }, [open]);
+
+  const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
+  const [ fetchCreateEventCalendar ] = useCreateEventCalendarMutation();
 
   useEffect(() => {
     if (isEditCard) {
@@ -84,7 +86,7 @@ export const ModalInfosEventCalendar = ({
     try {
       const calendarApi = eventInfos.view.calendar;
 
-      const eventCalendar = await createEventCalendar({
+      const res = await fetchCreateEventCalendar({
         eventCalendar: {
           title: title === '' ? '无标题' : title,
           start: eventInfos.startStr,
@@ -93,18 +95,23 @@ export const ModalInfosEventCalendar = ({
           textColor: cardColor.textColor,
           selectedOptions: selectedOptions,
         },
-      });
+      }).unwrap();
 
-      calendarApi.addEvent({
-        id: eventCalendar._id,
-        title: eventCalendar.title,
-        start: eventCalendar.start,
-        end: eventCalendar.endStr,
-        backgroundColor: cardColor.backgroundColor,
-        textColor: cardColor.textColor,
-      });
+      if (res?.code === 200) {
+        message.success(res?.message);
+        calendarApi.addEvent({
+          id: res?.schedule?._id,
+          title: res?.schedule?.title,
+          start: res?.schedule?.start,
+          end: res?.schedule?.endStr,
+          backgroundColor: cardColor.backgroundColor,
+          textColor: cardColor.textColor,
+        });
+      } else {
+        message.error(res?.message);
+      }
     } catch (err) {
-      toast.error('There was an error creating an event');
+      message.error('There was an error creating an event');
     } finally {
       setTitle('');
       setSelectedOptions([]);
@@ -117,7 +124,7 @@ export const ModalInfosEventCalendar = ({
       await deleteEventCalendar({ id: eventInfos.event.id });
       eventInfos.event.remove();
     } catch (error) {
-      toast.error('There was an error deleting an event');
+      message.error('Houve um erro ao deletar o evento');
     } finally {
       setTitle('');
       setSelectedOptions([]);
@@ -149,9 +156,14 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setProp('textColor', cardColor.textColor);
       }
 
-      await updateEventCalendar(eventCalendarUpdated);
+      const res: any = await fetchUpdateEventCalendar(eventCalendarUpdated).unwrap();
+      if (res?.code === 200) {
+        message.success(res?.message);
+      } else {
+        message.error(res?.message);
+      }
     } catch (error) {
-      toast.error('更新事件时出现错误"');
+      message.error('更新事件时出现错误');
     } finally {
       setTitle('');
       setSelectedOptions([]);
@@ -180,8 +192,7 @@ export const ModalInfosEventCalendar = ({
             </BackgroundColorRounded>
           ))}
         </SelectColors>
-
-        {/* 根据后端数据生成复选框选项 */}
+        
         {selectedOptions.map((option:any) => (
           <div key={option.id}>
             <input
@@ -192,7 +203,7 @@ export const ModalInfosEventCalendar = ({
             <label>{option.label}</label>
           </div>
         ))}
-
+        
         <Button
           variant="contained"
           fullWidth

@@ -1,5 +1,4 @@
 import {MenuProps} from 'antd'
-import React from "react";
 import {
   SearchOutlined,
   HomeOutlined,

@@ -3,6 +3,7 @@ import { CalendarScheduler } from "./mainCalendar";
 import { mapArrayEventCalendar } from "./domain";
 import { getAllEventsCalendar } from "./services/eventCalendarApi";
 import { IEventCalendar } from "./domain";
+import {message} from "antd";
 
 const CalendarApp: React.FC = () => {
   const [listEventsCalendar, setListEventsCalendar] = useState<IEventCalendar[]>([]);
@@ -14,10 +15,10 @@ const CalendarApp: React.FC = () => {
         const listAllEventsCalendar = mapArrayEventCalendar(eventsCalendar);
         setListEventsCalendar(listAllEventsCalendar);
       } catch (error) {
-        // 处理错误
+        message.error('后端接口异常，请稍后重试');
       }
     };
-    fetchData();
+    fetchData().then(() => {});
   }, []);
 
   return (
