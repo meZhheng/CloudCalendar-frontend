@@ -1,13 +1,12 @@
 import { Button, Modal, TextField } from '@mui/material';
 import { Key, useEffect, useState} from 'react';
-import { toast } from 'react-toastify';
-import { ListColorsCard } from '../../types';
+import { message } from 'antd';
+import { ListColorsCard } from '../../styles';
 import {
-  createEventCalendar,
-  deleteEventCalendar,
-  updateEventCalendar,
+  deleteEventCalendar
 } from '../../services/eventCalendarApi';
-import {BackgroundColorRounded, BoxContainer, SelectColors} from './styles';
+import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
+import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation } from "../../../store/eventApi";
 
 interface ICardColor {
   backgroundColor: string;
@@ -33,6 +32,9 @@ export const ModalInfosEventCalendar = ({
     textColor: '#ffffff',
   });
 
+  const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
+  const [ fetchCreateEventCalendar ] = useCreateEventCalendarMutation();
+
   useEffect(() => {
     if (isEditCard) {
       setTitle(eventInfos?.event?.title);
@@ -57,7 +59,7 @@ export const ModalInfosEventCalendar = ({
     try {
       const calendarApi = eventInfos.view.calendar;
 
-      const eventCalendar = await createEventCalendar({
+      const res = await fetchCreateEventCalendar({
         eventCalendar: {
           title: title === '' ? 'Sem título' : title,
           start: eventInfos.startStr,
@@ -65,18 +67,23 @@ export const ModalInfosEventCalendar = ({
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
         },
-      });
+      }).unwrap();
 
-      calendarApi.addEvent({
-        id: eventCalendar._id,
-        title: eventCalendar.title,
-        start: eventCalendar.start,
-        end: eventCalendar.endStr,
-        backgroundColor: cardColor.backgroundColor,
-        textColor: cardColor.textColor,
-      });
+      if (res?.code === 200) {
+        message.success(res?.message);
+        calendarApi.addEvent({
+          id: res?._id,
+          title: res?.title,
+          start: res?.start,
+          end: res?.endStr,
+          backgroundColor: cardColor.backgroundColor,
+          textColor: cardColor.textColor,
+        });
+      } else {
+        message.error(res?.message);
+      }
     } catch (err) {
-      toast.error('Houve um erro ao criar um evento');
+      message.error('Houve um erro ao criar um evento');
     } finally {
       setTitle('');
       handleClose();
@@ -88,7 +95,7 @@ export const ModalInfosEventCalendar = ({
       await deleteEventCalendar({id: eventInfos.event.id});
       eventInfos.event.remove();
     } catch (error) {
-      toast.error('Houve um erro ao deletar o evento');
+      message.error('Houve um erro ao deletar o evento');
     } finally {
       setTitle('');
       handleClose();
@@ -118,9 +125,14 @@ export const ModalInfosEventCalendar = ({
         currentEvent.setProp('textColor', cardColor.textColor);
       }
 
-      await updateEventCalendar(eventCalendarUpdated);
+      const res: any = await fetchUpdateEventCalendar(eventCalendarUpdated).unwrap();
+      if (res?.code === 200) {
+        message.success(res?.message);
+      } else {
+        message.error(res?.message);
+      }
     } catch (error) {
-      toast.error('Houve um erro ao atualizar o evento');
+      message.error('Houve um erro ao atualizar o evento');
     } finally {
       setTitle('');
       handleClose();

@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import {ReactNode} from "react";
 import {Route, Routes} from "react-router-dom";
 import {RouteConfig, routers} from "./router";
 import AuthRoute from "./router/AuthRoute";

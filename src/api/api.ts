@@ -1,4 +1,3 @@
-// 获取验证码
 export const GET_CAPTCHA = '/captcha.php';
 export const LOGIN = '/user/login.php';
 export const REGISTER = '/user/register.php';

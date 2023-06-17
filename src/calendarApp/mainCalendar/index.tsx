@@ -5,9 +5,9 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { ModalInfosEventCalendar } from "./modalInfoEventCalendar";
 import { useDisclosure } from "../hooks";
 import { useState } from "react";
-import { updateEventCalendar } from "../services/eventCalendarApi";
 import { message } from "antd";
 import { IEventCalendar } from "../domain";
+import { useUpdateEventCalendarMutation } from "../../store/eventApi";
 
 type CalendarSchedulerProps = {
   eventsCalendar: IEventCalendar[];
@@ -16,6 +16,8 @@ type CalendarSchedulerProps = {
 export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
   const [eventInfos, setEventInfos] = useState();
   const [isEditCard, setIsEditCard] = useState<boolean>(false);
+
+  const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
 
   const weekends = {
     weekendsVisible: true,
@@ -49,7 +51,12 @@ export const CalendarScheduler = ({eventsCalendar}: CalendarSchedulerProps) => {
         },
       };
 
-      await updateEventCalendar(eventCalendarUpdated);
+      const res: any = await fetchUpdateEventCalendar(eventCalendarUpdated).unwrap();
+      if (res?.code === 200) {
+        message.success(res?.message);
+      } else {
+        message.error(res?.message);
+      }
     } catch (err) {
       message.error('Houve um erro ao atualizar o evento');
     }
