@@ -50,7 +50,7 @@ const RegisterPage: React.FC = () => {
         localStorage.setItem("userToken", token);
         dispatch(setLogin("login"));
         dispatch(setUserInfo(res?.user));
-        navigate("/calendarApp");
+        navigate("/index");
       }
        else {
         message.error(res?.message);

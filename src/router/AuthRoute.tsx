@@ -18,7 +18,7 @@ const AuthRoute = ({ children, auth }: any) => {
         navigate("/login");
       } else if (isExist) {
         if (location.pathname === "/" || location.pathname === "/login") {
-          navigate("/calendarApp");
+          navigate("/index");
         } else {
           navigate(location.pathname);
         }

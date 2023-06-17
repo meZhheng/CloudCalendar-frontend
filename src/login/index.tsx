@@ -8,7 +8,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [captcha, setCaptcha] = useState('')
-  const [remember, setRemember] = useState(true)
+  const [remember] = useState(true)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
         localStorage.setItem("userToken", token);
         dispatch(setLogin("login"));
         dispatch(setUserInfo(res?.user));
-        navigate("/calendarApp");
+        navigate("/index");
       } else {
         message.error(res?.message);
         // 重新刷新验证码
