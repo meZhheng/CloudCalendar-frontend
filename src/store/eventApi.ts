@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {baseUrl} from "../api/baseQuery";
-import {LOGIN} from "../api/api";
+import {UPDATE_EVENT} from "../api/api";
 
 const eventApi = createApi({
   reducerPath: "loginApi",
@@ -13,7 +13,7 @@ const eventApi = createApi({
       updateEventCalendar: build.mutation({
         query(args) {
           return {
-            url: LOGIN,
+            url: UPDATE_EVENT,
             method: 'POST',
             body: args,
             headers: {
