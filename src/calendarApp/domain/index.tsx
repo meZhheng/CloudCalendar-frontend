@@ -5,6 +5,8 @@ export interface IEventCalendar {
   end: string;
   start: string;
   user: string;
+  backgroudColor: string;
+  textColor: string;
 }
 
 export const mapEventCalendar = (eventCalendar: IEventCalendar) => ({

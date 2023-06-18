@@ -46,7 +46,7 @@ const LoginPage: React.FC = () => {
         localStorage.setItem("userToken", token);
         dispatch(setLogin("login"));
         dispatch(setUserInfo(res?.user));
-        navigate("/index");
+        navigate("/calendarApp");
       } else {
         message.error(res?.message);
         // 重新刷新验证码

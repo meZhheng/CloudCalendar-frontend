@@ -50,7 +50,7 @@ const RegisterPage: React.FC = () => {
         localStorage.setItem("userToken", token);
         dispatch(setLogin("login"));
         dispatch(setUserInfo(res?.user));
-        navigate("/index");
+        navigate("/profile");
       }
        else {
         message.error(res?.message);
@@ -176,9 +176,7 @@ const RegisterPage: React.FC = () => {
         </form>
       </div>
     </div>
-
-)
-  ;
+  );
 };
 
 export default RegisterPage;

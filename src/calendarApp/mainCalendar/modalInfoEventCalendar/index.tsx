@@ -3,11 +3,10 @@ import { Modal, TextField, Button } from '@mui/material';
 import { Key } from 'react';
 import { message } from 'antd';
 import { ListColorsCard } from '../../styles';
-import { deleteEventCalendar } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 import { useGetGroupIdMutation } from "../../../store/shareGroupIdApi";
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation } from "../../../store/eventApi";
+import { useUpdateEventCalendarMutation, useCreateEventCalendarMutation, useDeleteEventCalendarMutation } from "../../../store/eventApi";
 import Radio from '@mui/material/Radio';
 
 interface ICardColor {
@@ -64,6 +63,7 @@ export const ModalInfosEventCalendar = ({
 
   const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
   const [ fetchCreateEventCalendar ] = useCreateEventCalendarMutation();
+  const [ fetchDeleteEventCalendar ] = useDeleteEventCalendarMutation();
 
   useEffect(() => {
     if (isEditCard) {
@@ -128,8 +128,16 @@ export const ModalInfosEventCalendar = ({
 
   const handleDeleteEvent = async () => {
     try {
-      await deleteEventCalendar({ id: eventInfos.event.id });
-      eventInfos.event.remove();
+      const res = await fetchDeleteEventCalendar({
+        id: eventInfos.event.id,
+        groupID: selectedOptions
+      }).unwrap();
+      if (res?.code === 200) {
+        message.success(res?.message);
+        eventInfos.event.remove();
+      } else {
+        message.error(res?.message);
+      }
     } catch (error) {
       message.error('There was an error deleting an event');
     } finally {
@@ -142,8 +150,7 @@ export const ModalInfosEventCalendar = ({
   const handleUpdatedEvent = async () => {
     try {
       const calendarApi = eventInfos.view.calendar;
-
-      const eventCalendarUpdated = {
+      const res: any = await fetchUpdateEventCalendar({
         eventCalendar: {
           _id: eventInfos.event.id,
           title: title !== '' ? title : '无标题',
@@ -151,21 +158,16 @@ export const ModalInfosEventCalendar = ({
           end: eventInfos.event.endStr,
           backgroundColor: cardColor.backgroundColor,
           textColor: cardColor.textColor,
-          selectedOptions: selectedOptions,
         },
-      };
-
-      const currentEvent = calendarApi.getEventById(eventInfos.event.id);
-
-      if (currentEvent) {
-        currentEvent.setProp('title', title !== '' ? title : '无标题');
-        currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
-        currentEvent.setProp('textColor', cardColor.textColor);
-      }
-
-      const res: any = await fetchUpdateEventCalendar(eventCalendarUpdated).unwrap();
+      }).unwrap();
       if (res?.code === 200) {
+        const currentEvent = calendarApi.getEventById(eventInfos.event.id);
         message.success(res?.message);
+        if (currentEvent) {
+          currentEvent.setProp('title', title !== '' ? title : '无标题');
+          currentEvent.setProp('backgroundColor', cardColor.backgroundColor);
+          currentEvent.setProp('textColor', cardColor.textColor);
+        }
       } else {
         message.error(res?.message);
       }
@@ -200,21 +202,22 @@ export const ModalInfosEventCalendar = ({
           ))}
         </SelectColors>
 
-        <div>
-          {GroupInfo.map((option: GroupOption) => (
-            <FormControlLabel
-                key={option.id}
-                control={
-                  <Radio
-                    checked={selectedOptions === option.id}
-                    onChange={() => handleOptionChange(option.id)}
-                  />
-                }
-                label={`${option.name}`}
-              />
-          ))}
-        </div>
-        
+        {!isEditCard && (
+          <div>
+            {GroupInfo.map((option: GroupOption) => (
+              <FormControlLabel
+                  key={option.id}
+                  control={
+                    <Radio
+                      checked={selectedOptions === option.id}
+                      onChange={() => handleOptionChange(option.id)}
+                    />
+                  }
+                  label={`${option.name}`}
+                />
+            ))}
+          </div>
+        )}
         <Button
           variant="contained"
           fullWidth

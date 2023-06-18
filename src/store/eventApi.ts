@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {baseUrl} from "../api/baseQuery";
-import {CREATE_EVENT, GET_EVENTS, UPDATE_EVENT} from "../api/api";
+import {CREATE_EVENT, DELETE_EVENT, GET_EVENTS, UPDATE_EVENT} from "../api/api";
 import {IEventCalendar} from "../calendarApp/domain";
 
 interface IEventCreateResponse {
@@ -24,11 +24,18 @@ interface IEventCreateArgs {
     selectedOptions: string;
   }
 }
-
 interface IEventGetAllResponse {
-  code: number;
-  message?: string;
-  events: IEventCalendar[],
+  code: number,
+  message?: string,
+  events: IEventCalendar[]
+}
+interface IEventDeleteResponse {
+  code: number,
+  message: string
+}
+interface IEventDeleteArgs {
+  id: string,
+  groupID: string
 }
 
 const eventApi = createApi({
@@ -76,7 +83,19 @@ const eventApi = createApi({
           return GET_EVENTS;
         },
       }),
+      deleteEventCalendar: build.mutation<IEventDeleteResponse, IEventDeleteArgs>({
+        query(args) {
+          return {
+            url: DELETE_EVENT,
+            method: 'POST',
+            body: args,
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        },
+      }),
     };
-  },
+  }
 });
-export const { useUpdateEventCalendarMutation,useCreateEventCalendarMutation, useGetEventsCalendarMutation } = eventApi;
+export const { useUpdateEventCalendarMutation,useCreateEventCalendarMutation, useGetEventsCalendarMutation, useDeleteEventCalendarMutation } = eventApi;

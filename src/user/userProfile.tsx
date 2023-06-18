@@ -6,7 +6,7 @@ import { useGetMemberQuery } from "../store/getMemberApi";
 import { message } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { setLogin, setUserInfo } from "../store/reducer/publicSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const UserProfile: React.FC = () => {
   const [GroupSettings, setGroupSettings] = useState(false);
@@ -100,6 +100,7 @@ const UserProfile: React.FC = () => {
       }));
       setGroupInfo(newGroupInfo);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[groupInfo,groupmemberError]);
 
 
@@ -113,6 +114,7 @@ const UserProfile: React.FC = () => {
       const res: any = await fetchJoinGroup({groupCode: groupCode}).unwrap();
       if (res?.code === 200) {
         refetchMember();
+        setJoinSettings(false);
         message.success(res?.message);
       } else {
         message.error(res?.message);
@@ -142,7 +144,7 @@ const UserProfile: React.FC = () => {
       const res: any = await fetchpersonalinfo(formData).unwrap();
       if (res?.code === 200) {
         refetchUserInfo();
-        refetchMember();
+        setInfoSettings(false);
         message.success(res?.message);
       } else {
         message.error(res?.message);
@@ -153,7 +155,6 @@ const UserProfile: React.FC = () => {
   };
 
   const CreateGroup = async (e: any) => {
-    setCreateSettings(false)
     e.preventDefault();
     const formData = {
         groupname: groupname,
@@ -162,6 +163,8 @@ const UserProfile: React.FC = () => {
     try {
       const res: any = await fetchcreateGroup(formData).unwrap();
       if (res?.code === 200) {
+        refetchMember();
+        setCreateSettings(false);
         message.success(res?.message);
       } else if (res?.code === 401){
         message.error(res?.message);
@@ -267,30 +270,30 @@ const UserProfile: React.FC = () => {
                className="w-full h-full rounded-tl-lg rounded-tr-lg" alt=""/>
         </div>
         <div className="flex flex-col items-center -mt-20">
-          <img src="/image/photo.jpg"
-               className="w-40 border-4 border-white rounded-full" alt=""/>
-            <div className="flex items-center space-x-2 mt-2">
-              {username&&<p className="text-2xl">{username}</p>}
-              <span className="bg-blue-500 rounded-full p-1" title="Verified">
-                <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-100 h-2.5 w-2.5" fill="none"
-                   viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4"
-                        d="M5 13l4 4L19 7"></path>
-                </svg>
-              </span>
-            </div>
-            <p className="text-gray-700">CloudCalendar Invited User</p>
-            <p className="text-sm text-gray-500">SJTU, Shanghai</p>
+          <img src="/image/photo.jpg" className="w-40 border-4 border-white rounded-full" alt=""/>
+          <div className="flex items-center space-x-2 mt-2">
+            {username&&<p className="text-2xl">{username}</p>}
+            <span className="bg-blue-500 rounded-full p-1" title="Verified">
+              <svg xmlns="http://www.w3.org/2000/svg" className="text-gray-100 h-2.5 w-2.5" fill="none"
+                 viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4"
+                      d="M5 13l4 4L19 7"></path>
+              </svg>
+            </span>
+          </div>
+          <p className="text-gray-700">CloudCalendar Invited User</p>
+          <p className="text-sm text-gray-500">SJTU, Shanghai</p>
         </div>
         <div className="flex-1 flex flex-col items-center lg:items-end justify-end px-8 mt-2">
           <div className="flex items-center space-x-4 mt-2">
-            <button
-              className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+            <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray px-4 py-2 rounded text-sm space-x-2 transition duration-100">
+              <Link to={"/calendarApp"} className="flex flex-row">
                 <svg className="h-5 w-5" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4499">
                   <path d="M768 790.56l-128-0.032v-118.944a128.224 128.224 0 0 0-128-128.192c-70.592 0-128 57.504-128 128.192v118.88l-128-0.032V364.992l255.68-167.52L768 365.376v425.184z m-192-0.032l-128-0.032v-118.912c0-35.392 28.704-64.192 64-64.192s64 28.8 64 64.192v118.944z m304.896-427.68L800 309.856V207.168a32 32 0 1 0-64 0v60.768l-206.464-135.296A31.296 31.296 0 0 0 511.424 128a31.168 31.168 0 0 0-17.6 4.64l-351.36 230.208a32 32 0 0 0 35.072 53.536L192 406.912v393.056c0 30.08 27.2 54.592 60.576 54.592h518.848c33.408 0 60.576-24.512 60.576-54.592v-392.64l13.856 9.056a31.968 31.968 0 0 0 35.04-53.536z" fill="#231815" p-id="4500">
                   </path>
                 </svg>
-              <span>Main Page</span>
+                <span>Main Page</span>
+              </Link>
             </button>
             <button
               className="flex items-center bg-blue-600 hover:bg-blue-700 text-gray px-4 py-2 rounded text-sm space-x-2 transition duration-100">
@@ -494,13 +497,11 @@ const UserProfile: React.FC = () => {
                           </div>
                         </div>
                       </div>
-
                       <div className="border-b border-gray-900/10 pb-12">
                         <h2 className="text-base font-semibold leading-7 text-gray-900">Notifications</h2>
                         <p className="mt-1 text-sm leading-6 text-gray-600">
                           We'll always let you know about important changes, but you pick what else you want to hear about.
                         </p>
-
                         <div className="mt-10 space-y-10">
                           <fieldset>
                             <legend className="text-sm font-semibold leading-6 text-gray-900">By Email</legend>
@@ -716,7 +717,7 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
+        <div className="bg-white rounded-lg shadow-xl p-8 flex flex-grow flex-col">
           <div className='relative'>
             <div className="absolute right-8 rounded" ref={ref1}>
                   <button onClick={toggleGroup} className="border border-gray-400 p-1 rounded text-gray-300 hover:text-gray-300 bg-gray-100 bg-opacity-10 hover:bg-opacity-20 relative" title="Group Settings">
@@ -884,7 +885,7 @@ const UserProfile: React.FC = () => {
                 )}
             </div>
           </div>
-          <div className="flex-1 bg-white rounded-lg p-8">
+          <div className="flex items-center justify-between">
                 <h4 className="text-xl text-gray-900 font-bold">Group Message</h4>
               </div>
           {GroupInfo.map((post:any) => 
@@ -935,7 +936,6 @@ const UserProfile: React.FC = () => {
               </div>
             </div>
           )}
-
         </div>
       </div>
     </div> 
