@@ -59,6 +59,7 @@ export const ModalInfosEventCalendar = ({
     if(open) {
       fetchData().then(() => {});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const [ fetchUpdateEventCalendar ] = useUpdateEventCalendarMutation();
