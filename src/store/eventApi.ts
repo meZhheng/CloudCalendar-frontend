@@ -1,6 +1,7 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {baseUrl} from "../api/baseQuery";
-import {CREATE_EVENT, GET_USERINFO, UPDATE_EVENT} from "../api/api";
+import {CREATE_EVENT, GET_EVENTS, UPDATE_EVENT} from "../api/api";
+import {IEventCalendar} from "../calendarApp/domain";
 
 interface IEventCreateResponse {
   code: number;
@@ -22,6 +23,12 @@ interface IEventCreateArgs {
     textColor: string;
     selectedOptions: string;
   }
+}
+
+interface IEventGetAllResponse {
+  code: number;
+  message?: string;
+  events: IEventCalendar[],
 }
 
 const eventApi = createApi({
@@ -64,12 +71,12 @@ const eventApi = createApi({
           };
         },
       }),
-      getEventsCalendar: build.query({
+      getEventsCalendar: build.mutation<IEventGetAllResponse, unknown>({
         query() {
-          return GET_USERINFO;
+          return GET_EVENTS;
         },
       }),
     };
   },
 });
-export const { useUpdateEventCalendarMutation,useCreateEventCalendarMutation, useGetEventsCalendarQuery } = eventApi;
+export const { useUpdateEventCalendarMutation,useCreateEventCalendarMutation, useGetEventsCalendarMutation } = eventApi;

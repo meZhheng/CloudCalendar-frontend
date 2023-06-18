@@ -3,9 +3,7 @@ import { Modal, TextField, Button } from '@mui/material';
 import { Key } from 'react';
 import { message } from 'antd';
 import { ListColorsCard } from '../../styles';
-import {
-  deleteEventCalendar
-} from '../../services/eventCalendarApi';
+import { deleteEventCalendar } from '../../services/eventCalendarApi';
 import { BackgroundColorRounded, BoxContainer, SelectColors } from './styles';
 import { useGetGroupIdMutation } from "../../../store/shareGroupIdApi";
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -51,7 +49,6 @@ export const ModalInfosEventCalendar = ({
         if (res?.code === 200) {
           const groupInfo = res?.groupInfo;
           setGroupInfo(groupInfo);
-          console.log(GroupInfo);
         } else {
           message.error(res?.message);
         }
@@ -60,7 +57,7 @@ export const ModalInfosEventCalendar = ({
       }
     };
     if(open) {
-      fetchData();
+      fetchData().then(() => {});
     }
   }, [open]);
 
