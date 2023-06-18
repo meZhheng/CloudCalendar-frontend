@@ -153,6 +153,7 @@ const UserProfile: React.FC = () => {
   };
 
   const CreateGroup = async (e: any) => {
+    setCreateSettings(false)
     e.preventDefault();
     const formData = {
         groupname: groupname,
@@ -715,7 +716,7 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-xl p-8">
+        <div className="flex-1 bg-white rounded-lg shadow-xl p-8">
           <div className='relative'>
             <div className="absolute right-8 rounded" ref={ref1}>
                   <button onClick={toggleGroup} className="border border-gray-400 p-1 rounded text-gray-300 hover:text-gray-300 bg-gray-100 bg-opacity-10 hover:bg-opacity-20 relative" title="Group Settings">
@@ -883,7 +884,7 @@ const UserProfile: React.FC = () => {
                 )}
             </div>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex-1 bg-white rounded-lg p-8">
                 <h4 className="text-xl text-gray-900 font-bold">Group Message</h4>
               </div>
           {GroupInfo.map((post:any) => 
